@@ -7,7 +7,7 @@
             labels: ['Zona Norte', 'Zona Centro', 'Zona Sur', 'Zona Este', 'Zona Oeste', 'Industrial'],
             datasets: [{
                 label: 'Nivel promedio (%)',
-                data: [75, 85, 65, 90, 70, 95],
+                data: [50, 75, 60, 90, 70, 95],
                 borderColor: '#ef4444',
                 backgroundColor: 'rgba(239, 68, 68, 0.1)',
                 tension: 0.4,

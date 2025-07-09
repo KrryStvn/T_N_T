@@ -377,6 +377,7 @@ body {
 
 /* Bottom Section (Dashboard specific) */
 .bottom-section {
+    margin-top: 100px;
     display: grid;
     grid-template-columns: 1fr 300px 300px;
     gap: 20px;
