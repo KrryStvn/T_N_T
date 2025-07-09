@@ -27,6 +27,38 @@
             overflow-y: auto;
         }
 
+        .nav-group-label {
+            padding: 8px 24px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            }
+
+            .sidebar-footer {
+            margin-top: 20px;
+            padding: 16px 24px;
+            border-top: 1px solid #334155;
+            }
+
+            .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            }
+
+            .user-info i {
+            font-size: 32px;
+            color: #64748b;
+            }
+
+            .user-name {
+            font-weight: 600;
+            color: #64748b;
+            font-size: 14px;
+            }
+
         .logo {
             padding: 0 20px 30px;
             border-bottom: 1px solid #334155;
