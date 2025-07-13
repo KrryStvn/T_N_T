@@ -144,6 +144,81 @@
         }
     });
 
+    // Tiempo promedio por ruta (Bar Chart)
+const avgTimeByRouteCtx = document.getElementById('avgTimeByRouteChart').getContext('2d');
+new Chart(avgTimeByRouteCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Ruta Norte', 'Ruta Centro', 'Ruta Sur', 'Ruta Este', 'Ruta Oeste', 'Ruta Industrial'],
+        datasets: [{
+            label: 'Tiempo promedio (min)',
+            data: [35, 42, 30, 50, 45, 38],
+            backgroundColor: '#3b82f6',
+            borderRadius: 4
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Minutos'
+                }
+            }
+        }
+    }
+});
+
+// Emisiones de CO₂ por recolección (Line Chart)
+const co2EmissionsCtx = document.getElementById('co2EmissionsChart').getContext('2d');
+new Chart(co2EmissionsCtx, {
+    type: 'line',
+    data: {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
+        datasets: [{
+            label: 'Emisiones (kg CO₂)',
+            data: [1200, 1100, 1300, 1250, 1150, 1050, 980],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            fill: true
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    boxWidth: 12,
+                    font: {
+                        size: 11
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'kg CO₂'
+                }
+            }
+        }
+    }
+});
+
+
     // Simulated real-time data updates
     function updateDashboardData() {
         console.log('Actualizando datos del dashboard de residuos...');
