@@ -7,6 +7,7 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="../css/dashboard.css" rel="stylesheet">
+<link href="../css/sidebar.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
@@ -71,12 +72,7 @@
                 </a>
             </li>
             
-            <li class="nav-item">
-                <a href="peso.html" class="nav-link">
-                    <i class="fas fa-weight"></i>
-                    <span>Peso</span>
-                </a>
-            </li>
+           
             <li class="nav-item">
                 <a href="reportes.html" class="nav-link">
                     <i class="fas fa-chart-bar"></i>
@@ -122,25 +118,11 @@
     <main class="main-content">
         <!-- Header -->
         <header class="header">
-            <div class="search-bar">
-                <input type="text" placeholder="Buscar...">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="header-actions">
-                <button class="notification-btn">
-                    <i class="fas fa-bell"></i>
-                    <span class="notification-badge">5</span>
-                </button>
-                <button class="notification-btn">
-                    <i class="fas fa-envelope"></i>
-                    <span class="notification-badge">3</span>
-                </button>
-                <div class="user-profile">
-                    <div class="user-avatar"></div>
-                    <span>Admin</span>
+                <div class="page-title">
+                    <i class="fas fa-tachometer-alt" style="color: #22d3ee;"></i>
+                    <h1>Dashboard</h1>
                 </div>
-            </div>
-        </header>
+            </header>
 
         <!-- Stats Cards -->
         <section class="stats-grid">
@@ -202,6 +184,9 @@
                     <canvas id="distributionChart"></canvas>
                 </div>
             </div>
+            
+            
+
         </section>
 
         <!-- Bottom Section -->
@@ -216,6 +201,25 @@
                     <canvas id="analyticsChart"></canvas>
                 </div>
             </div>
+            <div class="chart-card">
+    <div class="chart-header">
+        <h3 class="chart-title">Tiempo promedio por ruta</h3>
+        <span class="chart-period">Hoy</span>
+    </div>
+    <div class="chart-container">
+        <canvas id="avgTimeByRouteChart"></canvas>
+    </div>
+</div>
+
+<div class="chart-card">
+    <div class="chart-header">
+        <h3 class="chart-title">Emisiones de CO₂ por recolección</h3>
+        <span class="chart-period">Mensual</span>
+    </div>
+    <div class="chart-container">
+        <canvas id="co2EmissionsChart"></canvas>
+    </div>
+</div>
         </section>
     </main>
 </div>
