@@ -7,12 +7,12 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="../css/dashboard.css" rel="stylesheet">
+    <link href="../css/sidebar.css" rel="stylesheet">
     <link href="../css/equipo.css" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
-              <!-- Sidebar -->
 <aside class="sidebar">
     <div class="logo">
         <h2>Trash & Track</h2>
@@ -70,12 +70,7 @@
                 </a>
             </li>
             
-            <li class="nav-item">
-                <a href="peso.html" class="nav-link">
-                    <i class="fas fa-weight"></i>
-                    <span>Peso</span>
-                </a>
-            </li>
+           
             <li class="nav-item">
                 <a href="reportes.html" class="nav-link">
                     <i class="fas fa-chart-bar"></i>
@@ -94,13 +89,13 @@
                     <span>Configuración</span>
                 </a>
             </li>
-           
             <li class="nav-item">
-                <a href="equipo.html" class="nav-link active">
+                <a href="usuarios.html" class="nav-link active">
                     <i class="fas fa-users"></i>
                     <span>Equipo</span>
                 </a>
             </li>
+            
         </ul>
     </div>
 
@@ -136,32 +131,7 @@
             </header>
 
             <!-- Stats Cards -->
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number active">24</div>
-                    <div class="stat-label">Personal activo</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number inactive">3</div>
-                    <div class="stat-label">Fuera de servicio</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number training">5</div>
-                    <div class="stat-label">En capacitación</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number total">32</div>
-                    <div class="stat-label">Total empleados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color: #8b5cf6;">18</div>
-                    <div class="stat-label">Conductores</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color: #ec4899;">14</div>
-                    <div class="stat-label">Personal técnico</div>
-                </div>
-            </section>
+           
 
             <!-- Team Section -->
             <section class="team-section">
@@ -180,7 +150,6 @@
                             <div class="member-info">
                                 <h3>Carlos Rodríguez</h3>
                                 <div class="member-role">Conductor Senior</div>
-                                <span class="member-status status-active">Activo</span>
                             </div>
                         </div>
                         <div class="member-details">
@@ -221,7 +190,6 @@
                             <div class="member-info">
                                 <h3>Ana García</h3>
                                 <div class="member-role">Supervisora de Zona</div>
-                                <span class="member-status status-active">Activo</span>
                             </div>
                         </div>
                         <div class="member-details">
@@ -262,7 +230,6 @@
                             <div class="member-info">
                                 <h3>Miguel Torres</h3>
                                 <div class="member-role">Conductor</div>
-                                <span class="member-status status-training">Capacitación</span>
                             </div>
                         </div>
                         <div class="member-details">
@@ -303,7 +270,6 @@
                             <div class="member-info">
                                 <h3>Laura Martínez</h3>
                                 <div class="member-role">Coordinadora de Residuos</div>
-                                <span class="member-status status-active">Activo</span>
                             </div>
                         </div>
                         <div class="member-details">
@@ -344,7 +310,6 @@
                             <div class="member-info">
                                 <h3>Roberto Silva</h3>
                                 <div class="member-role">Conductor</div>
-                                <span class="member-status status-vacation">Vacaciones</span>
                             </div>
                         </div>
                         <div class="member-details">
@@ -385,7 +350,6 @@
                             <div class="member-info">
                                 <h3>Patricia López</h3>
                                 <div class="member-role">Técnico en Seguridad</div>
-                                <span class="member-status status-active">Activo</span>
                             </div>
                         </div>
                         <div class="member-details">

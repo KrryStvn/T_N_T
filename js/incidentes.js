@@ -1,5 +1,4 @@
 // API Configuration
-const API_BASE_URL = "https://localhost:7001/api" // Ajusta según tu configuración
 
 // Sample data structure matching your C# Incidente model
 let incidentes = []

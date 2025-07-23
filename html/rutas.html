@@ -2,18 +2,21 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rutas</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <link href="../css/rutas.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trash & Track - Gestión de Rutas Baja California</title>
     
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/rutas.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
 </head>
 <body>
-    <div class="dashboard-container">
-            <!-- Sidebar -->
-<aside class="sidebar">
+    <div class="container">
+        <!-- Sidebar -->
+       <aside class="sidebar">
     <div class="logo">
         <h2>Trash & Track</h2>
     </div>
@@ -70,12 +73,7 @@
                 </a>
             </li>
             
-            <li class="nav-item">
-                <a href="peso.html" class="nav-link">
-                    <i class="fas fa-weight"></i>
-                    <span>Peso</span>
-                </a>
-            </li>
+           
             <li class="nav-item">
                 <a href="reportes.html" class="nav-link">
                     <i class="fas fa-chart-bar"></i>
@@ -115,8 +113,9 @@
         </div>
     </div>
 </aside>
+
         <!-- Main Content -->
-        <main class="main-content">
+        <div class="main-content">
             <!-- Header -->
             <header class="header">
                 <div class="page-title">
@@ -124,183 +123,101 @@
                     <h1>Gestión de Rutas</h1>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-primary">
+                    
+                    <button class="btn btn-primary" id="newContainerBtn">
                         <i class="fas fa-plus"></i>
                         Nueva Ruta
                     </button>
                 </div>
             </header>
 
-            <!-- Stats Cards -->
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number active">12</div>
-                    <div class="stat-label">Rutas Activas</div>
+            <!-- Stats -->
+            <div class="stats">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value stat-cyan" id="activeRoutes">-</div>
+                        <div class="stat-label">Rutas Activas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value stat-green" id="completedToday">-</div>
+                        <div class="stat-label">Completadas Hoy</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value stat-red" id="delayedRoutes">-</div>
+                        <div class="stat-label">Retrasadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value stat-orange" id="scheduledRoutes">-</div>
+                        <div class="stat-label">Programadas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value stat-blue" id="avgTime">-</div>
+                        <div class="stat-label">Tiempo Promedio</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number completed">8</div>
-                    <div class="stat-label">Completadas Hoy</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number delayed">2</div>
-                    <div class="stat-label">Retrasadas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number scheduled">15</div>
-                    <div class="stat-label">Programadas</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" style="color: #6b7280;">4.2h</div>
-                    <div class="stat-label">Tiempo Promedio</div>
-                </div>
-            </section>
+            </div>
 
-            <!-- Main Layout -->
-            <section class="routes-layout">
+            <!-- Content Area -->
+            <div class="content-area">
                 <!-- Map Section -->
                 <div class="map-section">
-                    <div class="map-header">
-                        <h3 class="map-title">Mapa de Rutas en Tiempo Real</h3>
-                        <div class="map-filters">
-                            <button class="filter-btn active">Todas</button>
-                            <button class="filter-btn">Activas</button>
-                            <button class="filter-btn">Completadas</button>
-                            <button class="filter-btn">Retrasadas</button>
-                        </div>
-                    </div>
                     <div class="map-container">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <!-- Simulated markers -->
-                        <div class="map-marker marker-active">1</div>
-                        <div class="map-marker marker-completed">2</div>
-                        <div class="map-marker marker-delayed">3</div>
-                        <div class="map-marker marker-scheduled">4</div>
-                    </div>
-                </div>
-
-                <!-- Routes Panel -->
-                <div class="routes-panel">
-                    <div class="panel-header">
-                        <h3 class="panel-title">Lista de Rutas</h3>
-                        <div class="search-box">
-                            <input type="text" placeholder="Buscar ruta, conductor...">
-                            <i class="fas fa-search"></i>
-                        </div>
-                    </div>
-
-                    <!-- Alerts Section -->
-                    <div class="alerts-section">
-                        <div class="alerts-title">
-                            <i class="fas fa-exclamation-triangle"></i>
-                            Alertas Activas
-                        </div>
-                        <div class="alert-item">
-                            <i class="fas fa-clock"></i>
-                            Ruta #002: Retraso de 30 minutos
-                        </div>
-                        <div class="alert-item">
-                            <i class="fas fa-thermometer-half"></i>
-                            Ruta #007: Temperatura fuera de rango
-                        </div>
-                    </div>
-
-                    <!-- Routes List -->
-                    <div class="routes-list">
-                        <div class="route-item">
-                            <div class="route-header">
-                                <span class="route-number">RUTA #001</span>
-                                <span class="route-status status-active">En Progreso</span>
-                            </div>
-                            <div class="route-info">
-                                <strong>México → Guadalajara</strong><br>
-                                Conductor: Carlos Rodríguez<br>
-                                Salida: 06:00 AM | ETA: 02:30 PM<br>
-                                Carga: Contenedores refrigerados
-                            </div>
-                            <div class="route-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill progress-active" style="width: 65%"></div>
-                                </div>
+                        <div class="map-header">
+                            <h2 class="map-title">Mapa de Rutas - Baja California</h2>
+                            <div class="filter-buttons">
+                                <button class="filter-btn active" data-filter="all">Todas</button>
+                                <button class="filter-btn" data-filter="active">Activas</button>
+                                <button class="filter-btn" data-filter="completed">Completadas</button>
+                                <button class="filter-btn" data-filter="delayed">Retrasadas</button>
+                                <button class="refresh-btn" onclick="refreshData()">🔄 Actualizar</button>
                             </div>
                         </div>
-
-                        <div class="route-item">
-                            <div class="route-header">
-                                <span class="route-number">RUTA #002</span>
-                                <span class="route-status status-delayed">Retrasada</span>
+                        <div class="map-canvas">
+                            <div id="map"></div>
+                            <div class="loading-overlay" id="loadingOverlay">
+                                <div class="loading-spinner"></div>
+                                <p>Cargando datos...</p>
                             </div>
-                            <div class="route-info">
-                                <strong>Monterrey → Tijuana</strong><br>
-                                Conductor: Ana García<br>
-                                Salida: 05:30 AM | ETA: 04:15 PM (+30 min)<br>
-                                Carga: Productos químicos
-                            </div>
-                            <div class="route-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill progress-delayed" style="width: 45%"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="route-item">
-                            <div class="route-header">
-                                <span class="route-number">RUTA #003</span>
-                                <span class="route-status status-completed">Completada</span>
-                            </div>
-                            <div class="route-info">
-                                <strong>Puebla → Veracruz</strong><br>
-                                Conductor: Miguel Torres<br>
-                                Salida: 04:00 AM | Llegada: 11:30 AM<br>
-                                Carga: Alimentos perecederos
-                            </div>
-                            <div class="route-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill progress-completed" style="width: 100%"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="route-item">
-                            <div class="route-header">
-                                <span class="route-number">RUTA #004</span>
-                                <span class="route-status status-scheduled">Programada</span>
-                            </div>
-                            <div class="route-info">
-                                <strong>Querétaro → León</strong><br>
-                                Conductor: Laura Martínez<br>
-                                Salida: 14:00 PM | ETA: 18:30 PM<br>
-                                Carga: Materiales de construcción
-                            </div>
-                            <div class="route-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="route-item">
-                            <div class="route-header">
-                                <span class="route-number">RUTA #005</span>
-                                <span class="route-status status-active">En Progreso</span>
-                            </div>
-                            <div class="route-info">
-                                <strong>Toluca → Acapulco</strong><br>
-                                Conductor: Roberto Sánchez<br>
-                                Salida: 07:30 AM | ETA: 15:45 PM<br>
-                                Carga: Productos farmacéuticos
-                            </div>
-                            <div class="route-progress">
-                                <div class="progress-bar">
-                                    <div class="progress-fill progress-active" style="width: 35%"></div>
-                                </div>
+                            
+                            <!-- Route Info Panel -->
+                            <div id="routeInfo" class="route-info">
+                                <h3 id="routeInfoTitle"></h3>
+                                <div id="routeInfoDetails" class="route-info-details"></div>
+                                <button class="clear-selection-btn" onclick="clearSelection()">Limpiar Selección</button>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </main>
+
+                <!-- Route List -->
+                <div class="route-list">
+                    <div class="route-list-container">
+                        <div class="route-list-header">
+                            <h2 class="route-list-title">Lista de Rutas</h2>
+                            
+                            <div class="search-box">
+                                <span class="search-icon">🔍</span>
+                                <input type="text" class="search-input" placeholder="Buscar ruta, conductor..." onkeyup="filterRoutes(this.value)">
+                            </div>
+
+                            <div class="alerts-section" id="alertsSection">
+                                <!-- Alerts will be populated by API -->
+                            </div>
+                        </div>
+
+                        <div class="route-list-content" id="routeListContent">
+                            <!-- Route cards will be generated by API -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- Leaflet JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Custom JavaScript -->
     <script src="../js/rutas.js"></script>
 </body>
 </html>
