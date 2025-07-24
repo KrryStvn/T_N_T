@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <ul class="nav-menu">
                 <li class="nav-item"><a href="configuracion.html" class="nav-link"><i class="fas fa-cog"></i><span>Configuración</span></a></li>
                 <li class="nav-item"><a href="equipo.html" class="nav-link"><i class="fas fa-users"></i><span>Equipo</span></a></li>
+                <!-- NUEVO BOTÓN DE CHAT -->
+                <li class="nav-item"><a href="chat.html" class="nav-link"><i class="fas fa-comments"></i><span>Chat con usuarios</span></a></li>
             </ul>
         </div>
 
