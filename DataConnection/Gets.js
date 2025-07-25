@@ -184,7 +184,7 @@ export async function getCamiones() {
 }
 
 export async function getCamionesById(id) {
-    return fetchData(`Camiones/`+id);
+    return fetchData(`Camiones/${id}`);
 }
 
 // =======================================

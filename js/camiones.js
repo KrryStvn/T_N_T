@@ -42,8 +42,22 @@ async function renderTrucks(filteredTrucks = null) {
     trucksGrid.innerHTML = ''; // Limpiar las tarjetas existentes
 
     if (!filteredTrucks) {
-        const apiResponse = await getCamiones(); // Fetch all trucks from the API
-        trucks = apiResponse.camiones; // Assuming the API returns an object with a 'camiones' array
+        try {
+            const apiResponse = await getCamiones(); // Fetch all trucks from the API
+            // console.log("API Response for all trucks:", apiResponse); // Debugging: See what getCamiones returns
+
+            // FIX: Access the 'camiones' array from the apiResponse
+            if (apiResponse && Array.isArray(apiResponse.camiones)) {
+                trucks = apiResponse.camiones;
+            } else {
+                console.error("API response for camiones is not as expected (not an array under 'camiones'):", apiResponse);
+                trucks = []; // Ensure trucks array is empty if response is bad
+            }
+        } catch (error) {
+            console.error("Error al cargar camiones desde la API:", error);
+            trucksGrid.innerHTML = '<p class="text-red-500 text-center col-span-full">Error al cargar camiones. Intente de nuevo más tarde.</p>';
+            return;
+        }
     }
 
     const trucksToRender = filteredTrucks || trucks;
@@ -58,7 +72,7 @@ async function renderTrucks(filteredTrucks = null) {
         truckCard.className = 'truck-card';
         truckCard.innerHTML = `
             <div class="truck-header">
-                <span class="truck-id">${truck.placa}</span>
+                <span class="truck-id">${truck.placa || 'N/A'}</span>
             </div>
             <div class="truck-info">
                 <div class="info-row">
@@ -75,7 +89,7 @@ async function renderTrucks(filteredTrucks = null) {
                 </div>
                 <div class="info-row">
                     <span class="info-label">Capacidad de Carga:</span>
-                    <span class="info-value">${truck.capacidadCarga ? `${truck.capacidadCarga}` : 'N/A'}</span>
+                    <span class="info-value">${truck.capacidadCarga !== undefined && truck.capacidadCarga !== null ? `${truck.capacidadCarga}` : 'N/A'}</span>
                 </div>
             </div>
             <div class="truck-actions">
@@ -109,9 +123,18 @@ function attachButtonListeners() {
 
 // Mostrar Modal de Detalles del Camión
 async function showViewTruckModal(truckId) {
-    const truck = await getCamionesById(truckId); // Fetch truck details by ID from API
+    // console.log("camiones.js: Attempting to show details for truckId:", truckId); // Debugging: What ID is passed?
+    const apiResponse = await getCamionesById(truckId); // Fetch truck details by ID from API
+    // console.log("camiones.js: Received raw API response for view modal:", apiResponse); // Debugging: What raw data did getCamionesById return?
+
+    // FIX: Access the actual truck object from apiResponse.camiones
+    const truck = apiResponse && apiResponse.camiones ? apiResponse.camiones : null;
+
+    // console.log("camiones.js: Extracted truck object for view modal:", truck); // Debugging: What is the extracted truck object?
+
     if (!truck) {
-        console.error("Camión no encontrado:", truckId);
+        console.error("Camión no encontrado o datos no recibidos:", truckId);
+        // Optionally display a user-friendly error message in the modal or on the page
         return;
     }
 
@@ -122,7 +145,7 @@ async function showViewTruckModal(truckId) {
         <div class="modal-info-row"><span class="modal-info-label">Marca:</span><span class="modal-info-value">${truck.marca || 'N/A'}</span></div>
         <div class="modal-info-row"><span class="modal-info-label">Modelo:</span><span class="modal-info-value">${truck.modelo || 'N/A'}</span></div>
         <div class="modal-info-row"><span class="modal-info-label">Año:</span><span class="modal-info-value">${truck.anio || 'N/A'}</span></div>
-        <div class="modal-info-row"><span class="modal-info-label">Capacidad de Carga:</span><span class="modal-info-value">${truck.capacidadCarga ? `${truck.capacidadCarga} Ton` : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Capacidad de Carga:</span><span class="modal-info-value">${truck.capacidadCarga !== undefined && truck.capacidadCarga !== null ? `${truck.capacidadCarga}` : 'N/A'}</span></div>
         <div class="modal-info-row"><span class="modal-info-label">ID Usuario:</span><span class="modal-info-value">${truck.idUsuario || 'N/A'}</span></div>
     `;
     document.getElementById('viewTruckModal').classList.remove('hidden');
@@ -130,13 +153,21 @@ async function showViewTruckModal(truckId) {
 
 // Mostrar Modal de Edición de Camión
 async function showEditTruckModal(truckId) {
-    const truck = await getCamionesById(truckId); // Fetch truck details by ID from API
+    // console.log("camiones.js: Attempting to show edit modal for truckId:", truckId); // Debugging
+    const apiResponse = await getCamionesById(truckId);
+    // console.log("camiones.js: Received raw API response for edit modal:", apiResponse); // Debugging
+
+    // FIX: Access the actual truck object from apiResponse.camiones
+    const truck = apiResponse && apiResponse.camiones ? apiResponse.camiones : null;
+
+    // console.log("camiones.js: Extracted truck object for edit modal:", truck); // Debugging
+
     if (!truck) {
         console.error("Camión no encontrado para editar:", truckId);
         return;
     }
 
-    document.getElementById('editTruckId').value = truck.idCamion; // Use idCamion from API
+    document.getElementById('editTruckId').value = truck.idCamion || ''; // Use idCamion from API
     document.getElementById('editPlaca').value = truck.placa || ''; //
     document.getElementById('editMarca').value = truck.marca || ''; //
     document.getElementById('editModelo').value = truck.modelo || ''; //
@@ -160,7 +191,6 @@ function closeModal(modalId) {
         modalElement.classList.add('hidden');
     }
 }
-// Hacer la función closeModal globalmente accesible
 window.closeModal = closeModal;
 
 
@@ -207,7 +237,7 @@ document.getElementById('editTruckForm').addEventListener('submit', async (event
     }
 
     const updatedData = {
-        idCamion: truckId, // Ensure ID is part of the update payload
+        idCamion: parseInt(truckId), // Ensure ID is parsed as integer if API expects it
         placa: editPlaca,
         marca: editMarca,
         modelo: editModelo,
@@ -215,11 +245,12 @@ document.getElementById('editTruckForm').addEventListener('submit', async (event
         capacidadCarga: editCapacidadCarga, // Use capacidadCarga for API
     };
 
-    // Assuming you have a PUT/PATCH function in Gets.js or a separate utility for updates
-    // For demonstration, we'll just log and re-render.
-    // In a real application, you'd make an API call here:
+    console.log("Simulando actualización de camión:", updatedData);
+    
+    // Here you would typically make an API call to update the truck (PUT/PATCH request)
+    // For example:
     // try {
-    //     await updateCamion(updatedData); // You'd need to implement updateCamion in Gets.js or similar
+    //     await updateCamion(updatedData); // You'd need to implement updateCamion in Gets.js or a separate file for PUT/PATCH
     //     console.log("Camión actualizado exitosamente en la API!");
     //     closeModal('editTruckModal');
     //     renderTrucks(); // Re-render to show changes
@@ -227,22 +258,27 @@ document.getElementById('editTruckForm').addEventListener('submit', async (event
     //     console.error("Error al actualizar camión en la API:", error);
     //     // Display a general error message to the user
     // }
-    
-    console.log("Simulando actualización de camión:", updatedData);
-    // For now, re-fetch and render to reflect changes that *would* have been made
-    // if a PUT/PATCH endpoint was called successfully.
+
     closeModal('editTruckModal');
-    renderTrucks();
+    renderTrucks(); // Re-render to reflect changes (though not persistent without API update)
 });
 
 // Función para manejar la búsqueda (ahora llamada en tiempo real)
 async function handleSearch() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
     const allTrucksResponse = await getCamiones(); // Fetch all trucks from the API
-    const allTrucks = allTrucksResponse.camiones; // Assuming the API returns an object with a 'camiones' array
+    let allTrucks = [];
+
+    // FIX: Access the 'camiones' array from the apiResponse
+    if (allTrucksResponse && Array.isArray(allTrucksResponse.camiones)) {
+        allTrucks = allTrucksResponse.camiones;
+    } else {
+        console.error("API response for search is not as expected (not an array under 'camiones'):", allTrucksResponse);
+        allTrucks = [];
+    }
     
     if (searchTerm === "") {
-        renderTrucks(allTrucks); // Si el campo de búsqueda está vacío, mostrar todos los camiones
+        renderTrucks(allTrucks);
         return;
     }
 
@@ -255,7 +291,7 @@ async function handleSearch() {
             (truck.modelo && truck.modelo.toLowerCase().includes(searchTerm)) //
         );
     });
-    renderTrucks(filteredTrucks); // Renderizar solo los camiones filtrados
+    renderTrucks(filteredTrucks);
 }
 // Hacer la función handleSearch globalmente accesible para oninput
 window.handleSearch = handleSearch;
@@ -268,5 +304,5 @@ document.getElementById('newTruckBtn').addEventListener('click', () => {
 
 // Cargar y renderizar camiones cuando la ventana se carga
 window.onload = () => {
-    renderTrucks(); // Renderiza los camiones cargados desde la API
+    renderTrucks();
 };
