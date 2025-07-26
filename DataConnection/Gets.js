@@ -163,7 +163,7 @@ export async function getContenedores() {
 }
 
 export async function getContenedoresById(id) {
-    return fetchData(`Containers/`+id);
+    return fetchData(`Containers/${id}`);
 }
 
 export async function getContenedoresByEmpresa(idEmpresa){
