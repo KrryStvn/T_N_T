@@ -1,7 +1,7 @@
 import { config } from './Config.js';
 
 // Función auxiliar para todas las llamadas GET
-async function fetchData(endpoint){
+export async function fetchData(endpoint){
     var url = config.api.url + endpoint;
     console.log(url);
 
