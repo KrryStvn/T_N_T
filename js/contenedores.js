@@ -1,145 +1,190 @@
-// js/containers-management.js
+// contenedores.js
+import { getContenedores } from '../DataConnection/Gets.js'; // Importa las funciones GET
 
-// Array para almacenar los datos de los contenedores (se inicializa al cargar desde localStorage)
-let containers = [];
+let containers = []; // Array para almacenar los datos de los contenedores
 
-// Datos estáticos para tipos de residuo y tipos de contenedor (para simulación)
-export const TIPO_RESIDUOS_DATA = [
-    { id: 1, nombre: 'Químicos', descripcion: 'Residuos químicos peligrosos.' },
-    { id: 2, nombre: 'Biológicos', descripcion: 'Residuos biológicos y médicos.' },
-    { id: 3, nombre: 'Radiactivos', descripcion: 'Residuos con material radiactivo.' },
-    { id: 4, nombre: 'Industriales', descripcion: 'Residuos generales de procesos industriales.' },
-    { id: 5, nombre: 'Corrosivos', descripcion: 'Residuos que pueden corroer materiales.' }
-];
-
-export const TIPO_CONTENEDORES_DATA = [
-    { id: 101, nombre: 'Barril 200L', descripcion: 'Barril estándar de 200 litros.', capacidad_maxima: 200 },
-    { id: 102, nombre: 'Contenedor IBC 1000L', descripcion: 'Contenedor intermedio para granel de 1000 litros.', capacidad_maxima: 1000 },
-    { id: 103, nombre: 'Cubo 20L', descripcion: 'Cubo pequeño de 20 litros.', capacidad_maxima: 20 },
-    { id: 104, nombre: 'Cisterna 5000L', descripcion: 'Cisterna para líquidos a granel de 5000 litros.', capacidad_maxima: 5000 }
-];
-
-// Función para cargar contenedores desde localStorage
-export function loadContainersFromLocalStorage() {
-    const storedContainers = localStorage.getItem('contenedores');
-    return storedContainers ? JSON.parse(storedContainers) : [];
-}
-
-// Función para guardar contenedores en localStorage
-export function saveContainersToLocalStorage(updatedContainers) {
-    localStorage.setItem('contenedores', JSON.stringify(updatedContainers));
-}
-
-// Función para mostrar/ocultar mensajes de error de campo
-export function displayFieldError(fieldId, message, isEditModal = false) {
-    const prefix = isEditModal ? 'edit' : '';
-    const errorElement = document.getElementById(prefix + fieldId + 'Error');
-    const inputElement = document.getElementById(prefix + fieldId);
-    if (message) {
-        errorElement.textContent = message;
-        errorElement.style.display = 'block';
-        inputElement.classList.add('invalid');
-    } else {
-        errorElement.textContent = '';
-        errorElement.style.display = 'none';
-        inputElement.classList.remove('invalid');
+// Helper function to format date
+function formatDate(isoString) {
+    if (!isoString) return 'N/A';
+    try {
+        const date = new Date(isoString);
+        return date.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (e) {
+        console.error("Error formatting date:", isoString, e);
+        return 'N/A';
     }
 }
 
-// Función de validación para la descripción
-export function validateDescripcion(descripcion) {
-    if (!descripcion || descripcion.trim() === '') {
-        return "La descripción es obligatoria.";
+// Function to calculate fill level percentage based on weight
+function calculateFillLevel(currentWeight_kg, maxWeight_kg) {
+    if (currentWeight_kg === undefined || currentWeight_kg === null ||
+        maxWeight_kg === undefined || maxWeight_kg === null ||
+        maxWeight_kg <= 0) { // maxWeight_kg must be positive to avoid division by zero
+        return 'N/A';
     }
-    if (descripcion.length < 10) {
-        return "La descripción debe tener al menos 10 caracteres.";
-    }
-    return "";
-}
-
-// Función para cerrar cualquier modal
-export function closeModal(modalId) {
-    const modalElement = document.getElementById(modalId);
-    if (modalElement) {
-        modalElement.classList.add('hidden');
-    }
-}
-
-// Función para manejar la búsqueda en tiempo real
-export function handleContainerSearch() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
-    const allContainers = loadContainersFromLocalStorage();
     
-    if (searchTerm === "") {
-        renderContainers(allContainers); // Si el campo de búsqueda está vacío, mostrar todos los contenedores
-        return;
-    }
-
-    const filteredContainers = allContainers.filter(container => {
-        return (
-            (container.id && container.id.toLowerCase().includes(searchTerm)) ||
-            (container.descripcion && container.descripcion.toLowerCase().includes(searchTerm)) ||
-            (container.tipo_residuo_nombre && container.tipo_residuo_nombre.toLowerCase().includes(searchTerm)) ||
-            (container.tipo_contenedor_nombre && container.tipo_contenedor_nombre.toLowerCase().includes(searchTerm))
-        );
-    });
-    renderContainers(filteredContainers); // Renderizar solo los contenedores filtrados
+    const fill = (currentWeight_kg / maxWeight_kg) * 100;
+    
+    // Aseguramos que el porcentaje esté entre 0 y 100.
+    return Math.max(0, Math.min(100, fill.toFixed(0))) + '%';
 }
 
-// Función para renderizar contenedores en la cuadrícula (específica de contenedores.html)
-export function renderContainers(filteredContainers = null) {
-    const containersGrid = document.getElementById('containersGrid');
-    if (!containersGrid) return; // Asegurarse de que el elemento existe
+// Function to get status class for styling (used for header status)
+function getStatusClass(fillLevel) {
+    if (fillLevel === 'N/A') return 'offline'; // Or a dedicated 'unknown' class
+    const level = parseInt(fillLevel);
+    if (isNaN(level)) return 'offline'; // Handle cases where fillLevel is not a number
 
+    if (level >= 76) return 'full';
+    if (level >= 26) return 'medium';
+    return 'empty';
+}
+
+
+// Function to update the statistics cards in the HTML
+function updateStatsCards(allContainers) {
+    let emptyCount = 0;
+    let mediumCount = 0;
+    let fullCount = 0;
+    let offlineCount = 0;
+    let totalFillLevel = 0;
+    let validContainersForAverage = 0;
+
+    allContainers.forEach(container => {
+        const currentWeight = container.values && container.values.weight_kg !== undefined && container.values.weight_kg !== null ? container.values.weight_kg : null;
+        const maxWeight = container.maxWeight_kg !== undefined && container.maxWeight_kg !== null ? container.maxWeight_kg : null;
+        
+        const fillLevelRaw = calculateFillLevel(currentWeight, maxWeight);
+        const fillLevelNumeric = parseInt(fillLevelRaw);
+
+        if (isNaN(fillLevelNumeric)) {
+            offlineCount++;
+        } else {
+            totalFillLevel += fillLevelNumeric;
+            validContainersForAverage++;
+
+            if (fillLevelNumeric >= 76) {
+                fullCount++;
+            } else if (fillLevelNumeric >= 26) {
+                mediumCount++;
+            } else {
+                emptyCount++;
+            }
+        }
+    });
+
+    const averageFillLevel = validContainersForAverage > 0 ? (totalFillLevel / validContainersForAverage).toFixed(0) : 'N/A';
+
+    // Update HTML elements
+    document.querySelector('.stat-card .stat-number.empty').textContent = emptyCount;
+    document.querySelector('.stat-card .stat-number.medium').textContent = mediumCount;
+    document.querySelector('.stat-card .stat-number.full').textContent = fullCount;
+    document.querySelector('.stat-card .stat-number.offline').textContent = offlineCount;
+    document.querySelector('.stat-card:last-child .stat-number').textContent = `${averageFillLevel}%`; // Last card is average
+}
+
+
+// Render containers in the grid
+async function renderContainers(filteredContainers = null) {
+    const containersGrid = document.getElementById('containersGrid');
     containersGrid.innerHTML = ''; // Limpiar las tarjetas existentes
 
-    const containersToRender = filteredContainers || loadContainersFromLocalStorage(); 
-    containers = loadContainersFromLocalStorage(); // Asegurarse de que 'containers' global siempre tenga todos los datos
+    if (!filteredContainers) {
+        try {
+            const apiResponse = await getContenedores(); // Fetch all containers from the API
+            console.log("API Response for all containers:", apiResponse); // Debugging: Check the structure here
 
-    if (containersToRender.length === 0) {
+            // FIX: If apiResponse is directly an array, assign it.
+            // Check if the response itself is an array.
+            if (Array.isArray(apiResponse)) {
+                containers = apiResponse;
+            } else if (apiResponse && Array.isArray(apiResponse.contenedores)) {
+                // This is a fallback for if it sometimes returns an object wrapper (like camiones)
+                containers = apiResponse.contenedores;
+            } else {
+                console.error("API response for containers is not an array directly or under 'contenedores':", apiResponse);
+                containers = []; // Ensure containers array is empty if response is bad
+            }
+        } catch (error) {
+            console.error("Error al cargar contenedores desde la API:", error);
+            containersGrid.innerHTML = '<p class="text-red-500 text-center col-span-full">Error al cargar contenedores. Intente de nuevo más tarde.</p>';
+            return;
+        }
+    }
+
+    const containersToRender = filteredContainers || containers;
+
+    if (!containersToRender || containersToRender.length === 0) {
         containersGrid.innerHTML = '<p class="text-gray-500 text-center col-span-full">No hay contenedores registrados que coincidan con la búsqueda.</p>';
+        // Update stats cards even if no filtered containers
+        updateStatsCards(containers); // Use the full list of containers for stats
         return;
     }
 
     containersToRender.forEach(container => {
-        const fillLevel = Math.floor(Math.random() * 100); // Simular nivel de llenado para la tarjeta
-        let statusClass = 'status-empty';
-        let fillProgressClass = 'empty';
-        if (fillLevel > 75) {
-            statusClass = 'status-full';
-            fillProgressClass = 'full';
-        } else if (fillLevel > 25) {
-            statusClass = 'status-medium';
-            fillProgressClass = 'medium';
+        // Calcular el nivel de llenado real y sus clases para la barra y la cabecera
+        const currentWeight = container.values && container.values.weight_kg !== undefined && container.values.weight_kg !== null ? container.values.weight_kg : null;
+        const maxWeight = container.maxWeight_kg !== undefined && container.maxWeight_kg !== null ? container.maxWeight_kg : null;
+
+        const fillLevelRaw = calculateFillLevel(currentWeight, maxWeight);
+        const fillLevelNumeric = parseInt(fillLevelRaw); // Para el width de la barra
+
+        let statusClassHeader = 'status-offline'; // Clase por defecto para el span de status en la cabecera
+        let fillProgressClass = 'offline'; // Clase por defecto para la barra de progreso y la tarjeta principal
+
+        if (!isNaN(fillLevelNumeric)) {
+            if (fillLevelNumeric >= 76) {
+                statusClassHeader = 'status-full';
+                fillProgressClass = 'full';
+            } else if (fillLevelNumeric >= 26) {
+                statusClassHeader = 'status-medium';
+                fillProgressClass = 'medium';
+            } else {
+                statusClassHeader = 'status-empty';
+                fillProgressClass = 'empty';
+            }
         }
+        
+        // Obtener valores reales de las métricas si existen
+        const temperature = container.values && container.values.temperature_C !== undefined && container.values.temperature_C !== null ? `${container.values.temperature_C.toFixed(1)}°C` : 'N/A';
+        // Usamos el status general del contenedor como "Estado" o puedes tener un campo específico para "Estado sensor"
+        const sensorStatus = container.status || 'N/A'; 
 
         const containerCard = document.createElement('div');
-        containerCard.className = 'container-card';
+        // La clase de la tarjeta principal ahora usa fillProgressClass para su estilo general
+        containerCard.className = `container-card ${fillProgressClass}`;
         containerCard.innerHTML = `
             <div class="container-header">
-                <span class="container-id">${container.id}</span>
-                <span class="container-status ${statusClass}">${statusClass.replace('status-', '')}</span>
+                <span class="container-id">${container.deviceID || 'N/A'}</span>
+                <span class="container-status ${statusClassHeader}">${statusClassHeader.replace('status-', '')}</span>
             </div>
             <div class="container-info">
-                <strong>Tipo:</strong> ${container.tipo_residuo_nombre || 'N/A'}<br>
-                <strong>Contenedor:</strong> ${container.tipo_contenedor_nombre || 'N/A'}<br>
-                <strong>Descripción:</strong> ${container.descripcion || 'N/A'}<br>
-                <strong>Fecha Registro:</strong> ${container.fecha_registro || 'N/A'}
+                <strong>Tipo:</strong> ${container.type || 'N/A'}<br>
+                <strong>Descripción:</strong> ${container.name || 'N/A'}<br>
+                <strong>Fecha Última Actualización:</strong> ${formatDate(container.lastUpdated) || 'N/A'}
+                <br><strong>Peso Actual:</strong> ${currentWeight !== null ? `${currentWeight.toFixed(2)} kg` : 'N/A'}
+                <br><strong>Peso Máximo:</strong> ${maxWeight !== null ? `${maxWeight.toFixed(2)} kg` : 'N/A'}
             </div>
             <div class="fill-level">
                 <div class="fill-bar">
-                    <div class="fill-progress ${fillProgressClass}" style="width: ${fillLevel}%"></div>
+                    <div class="fill-progress ${fillProgressClass}" style="width: ${isNaN(fillLevelNumeric) ? 0 : fillLevelNumeric}%"></div>
                 </div>
-                <div class="fill-text">${fillLevel}% lleno</div>
+                <div class="fill-text">${fillLevelRaw} lleno</div>
             </div>
             <div class="container-metrics">
                 <div class="metric-small">
-                    <div class="metric-small-value">${Math.floor(Math.random() * 15) + 15}°C</div>
+                    <div class="metric-small-value">${temperature}</div>
                     <div class="metric-small-label">Temperatura</div>
                 </div>
                 <div class="metric-small">
-                    <div class="metric-small-value">Normal</div>
-                    <div class="metric-small-label">Estado sensor</div>
+                    <div class="metric-small-value">${sensorStatus}</div>
+                    <div class="metric-small-label">Estado</div>
                 </div>
             </div>
             <div class="container-actions">
@@ -151,10 +196,12 @@ export function renderContainers(filteredContainers = null) {
     });
 
     attachButtonListeners();
+    // Call updateStatsCards AFTER containers array has been populated/filtered
+    updateStatsCards(filteredContainers || containers);
 }
 
-// Función para adjuntar oyentes de eventos a los botones "Ver Detalles" y "Editar"
-export function attachButtonListeners() {
+// Attach event listeners to "Ver Detalles" and "Editar" buttons
+function attachButtonListeners() {
     document.querySelectorAll('.btn-view').forEach(button => {
         button.onclick = (event) => {
             const containerId = event.target.dataset.id;
@@ -170,105 +217,108 @@ export function attachButtonListeners() {
     });
 }
 
-// Mostrar Modal de Detalles del Contenedor
-export function showViewContainerModal(containerId) {
-    const container = containers.find(c => c.id === containerId);
+// Show Container Details Modal
+async function showViewContainerModal(containerId) {
+    // console.log("contenedores.js: Attempting to show details for containerId:", containerId); // Debugging
+    let container = null;
+    try {
+        const apiResponse = await getContenedorById(containerId); // Fetch container details by ID from API
+        // console.log("contenedores.js: Received raw API response for view modal:", apiResponse); // Debugging
+
+        // Check if apiResponse is directly the container object (for getById)
+        if (apiResponse && typeof apiResponse === 'object' && apiResponse.id === containerId) {
+            container = apiResponse;
+        } else if (apiResponse && apiResponse.contenedores && typeof apiResponse.contenedores === 'object' && apiResponse.contenedores.id === containerId) {
+            // Fallback for if it's wrapped in 'contenedores' property
+            container = apiResponse.contenedores;
+        } else {
+             console.error("API response for single container by ID is not as expected:", apiResponse);
+        }
+    } catch (error) {
+        console.error("Error al obtener detalles del contenedor:", error);
+    }
+
+    // console.log("contenedores.js: Extracted container object for view modal:", container); // Debugging
+
     if (!container) {
-        console.error("Contenedor no encontrado:", containerId);
+        console.error("Contenedor no encontrado o datos no recibidos:", containerId);
+        // Optionally display a user-friendly error message in the modal or on the page
         return;
     }
 
+    // Recalcular fillLevel para el modal usando el peso
+    const currentWeightModal = container.values && container.values.weight_kg !== undefined && container.values.weight_kg !== null ? container.values.weight_kg : null;
+    const maxWeightModal = container.maxWeight_kg !== undefined && container.maxWeight_kg !== null ? container.maxWeight_kg : null;
+    const fillLevelModal = calculateFillLevel(currentWeightModal, maxWeightModal);
+
+    const lastUpdated = formatDate(container.lastUpdated);
+    const isOpen = container.values && container.values.is_open ? 'Sí' : 'No';
+
     const detailsDiv = document.getElementById('viewContainerDetails');
-    if (!detailsDiv) return;
-
-    // --- Simulación de datos para el modal de detalles (basado en la imagen) ---
-    // Usar la capacidad máxima del tipo de contenedor si está disponible, sino un valor por defecto
-    const maxCapacity = container.capacidad_maxima_contenedor || 500; 
-    const simulatedFillLevel = Math.floor(Math.random() * (100 - 70 + 1)) + 70; // Simular entre 70-100% para mostrar "Crítico"
-    const currentWeight = ((simulatedFillLevel / 100) * maxCapacity).toFixed(0);
-    const remainingSpace = (maxCapacity - currentWeight).toFixed(0);
-    const isCritical = simulatedFillLevel > 90; // Si es más del 90% lleno, es crítico
-    
-    // Simulación de datos del sensor
-    const sensorId = 'WS-' + Math.floor(Math.random() * 999).toString().padStart(3, '0') + '-' + (Math.random() > 0.5 ? 'N' : 'S');
-    const lastCalibrationDays = Math.floor(Math.random() * 30) + 1;
-    const sensorStatus = Math.random() > 0.1 ? 'Funcionando' : 'Offline'; // 10% de probabilidad de offline
-    
-    // Simulación de cambio de peso
-    const weightChange = Math.floor(Math.random() * 20) - 10; // +/- 10kg
-    const weightChangeText = weightChange > 0 ? `+${weightChange}kg` : `${weightChange}kg`;
-    const weightChangeColor = weightChange > 0 ? '#ef4444' : (weightChange < 0 ? '#10b981' : '#64748b'); // Tailwind red-500, green-500, gray-500
-    const weightChangeArrow = weightChange > 0 ? '↑' : (weightChange < 0 ? '↓' : '');
-    
-    // Simulación de ubicación basada en el ID del contenedor
-    const location = container.id.includes('001') ? 'Laboratorio A' : 
-                     (container.id.includes('002') ? 'Sala de Cirugía' :
-                     (container.id.includes('003') ? 'Unidad de Radiología' :
-                     (container.id.includes('004') ? 'Planta de Ensamblaje' :
-                     (container.id.includes('005') ? 'Área de Producción' : 'Zona Desconocida'))));
-
-
     detailsDiv.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-            <h3 style="font-size: 1.25rem; font-weight: 600; color: #1e293b;">${container.id}</h3>
-            ${isCritical ? '<span style="padding: 0.25rem 0.75rem; background-color: #fee2e2; color: #dc2626; border-radius: 9999px; font-size: 0.75rem; font-weight: 500;">Crítico</span>' : ''}
-        </div>
-
-        <div style="text-align: center; margin-bottom: 1.5rem;">
-            <p style="font-size: 3rem; font-weight: 700; color: #1e293b; line-height: 1;">${currentWeight}</p>
-            <p style="font-size: 0.875rem; color: #64748b;">${maxCapacity}kg máx.</p>
-        </div>
-
-        <div style="width: 100%; background-color: #e2e8f0; border-radius: 9999px; height: 0.625rem; margin-bottom: 1rem;">
-            <div style="background-color: #ef4444; height: 100%; border-radius: 9999px; width: ${simulatedFillLevel}%"></div>
-        </div>
-
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: center; margin-bottom: 1.5rem;">
-            <div>
-                <p style="font-size: 1.125rem; font-weight: 600; color: #1e293b;">${simulatedFillLevel}%</p>
-                <p style="font-size: 0.875rem; color: #64748b;">Capacidad</p>
-            </div>
-            <div>
-                <p style="font-size: 1.125rem; font-weight: 600; color: #1e293b;">${remainingSpace}kg</p>
-                <p style="font-size: 0.875rem; color: #64748b;">Espacio restante</p>
-            </div>
-            <div>
-                <p style="font-size: 1.125rem; font-weight: 600; color: #1e293b;">${container.tipo_residuo_nombre || 'N/A'}</p>
-                <p style="font-size: 0.875rem; color: #64748b;">Tipo residuo</p>
-            </div>
-            <div>
-                <p style="font-size: 1.125rem; font-weight: 600; color: #1e293b;">${location}</p>
-                <p style="font-size: 0.875rem; color: #64748b;">Ubicación</p>
-            </div>
-        </div>
-
-        <div style="border-top: 1px solid #e2e8f0; padding-top: 1rem; font-size: 0.875rem; color: #374151;">
-            <p style="margin-bottom: 0.5rem;"><strong>Sensor ID:</strong> ${sensorId}</p>
-            <p style="margin-bottom: 0.5rem;"><strong>Última calibración:</strong> Hace ${lastCalibrationDays} días</p>
-            <p style="margin-bottom: 0.5rem;"><strong>Estado del sensor:</strong> ${sensorStatus}</p>
-            <p style="color: ${weightChangeColor}; margin-top: 0.5rem;">
-                ${weightChangeArrow} ${weightChangeText} en las últimas 2 horas
-            </p>
-        </div>
+        <div class="modal-info-row"><span class="modal-info-label">ID Contenedor:</span><span class="modal-info-value">${container.id || 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Device ID:</span><span class="modal-info-value">${container.deviceID || 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Client ID:</span><span class="modal-info-value">${container.clientID || 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Nombre:</span><span class="modal-info-value">${container.name || 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Estado:</span><span class="modal-info-value">${container.status || 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Tipo:</span><span class="modal-info-value">${container.type || 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Peso Máximo:</span><span class="modal-info-value">${maxWeightModal !== null ? `${maxWeightModal} kg` : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Última Actualización:</span><span class="modal-info-value">${lastUpdated}</span></div>
+        <hr class="modal-divider">
+        <div class="modal-info-row"><span class="modal-info-label">Temp. (°C):</span><span class="modal-info-value">${container.values && container.values.temperature_C !== undefined && container.values.temperature_C !== null ? container.values.temperature_C.toFixed(2) : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Humedad (%RH):</span><span class="modal-info-value">${container.values && container.values.humidity_RH !== undefined && container.values.humidity_RH !== null ? container.values.humidity_RH.toFixed(2) : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Calidad Aire (ppm):</span><span class="modal-info-value">${container.values && container.values.air_quality_ppm !== undefined && container.values.air_quality_ppm !== null ? container.values.air_quality_ppm.toFixed(2) : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Gas (ppm):</span><span class="modal-info-value">${container.values && container.values.gas_ppm !== undefined && container.values.gas_ppm !== null ? container.values.gas_ppm.toFixed(2) : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Distancia (cm):</span><span class="modal-info-value">${container.values && container.values.distance_cm !== undefined && container.values.distance_cm !== null ? container.values.distance_cm.toFixed(2) : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Peso Recolectado (kg):</span><span class="modal-info-value">${currentWeightModal !== null ? currentWeightModal.toFixed(2) : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Abierto:</span><span class="modal-info-value">${isOpen}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Veces Abierto:</span><span class="modal-info-value">${container.values && container.values.open_count !== undefined && container.values.open_count !== null ? container.values.open_count : 'N/A'}</span></div>
+        <div class="modal-info-row"><span class="modal-info-label">Nivel de Llenado:</span><span class="modal-info-value">${fillLevelModal}</span></div>
     `;
     document.getElementById('viewContainerModal').classList.remove('hidden');
 }
 
-// Mostrar Modal de Edición de Contenedor
-export function showEditContainerModal(containerId) {
-    const container = containers.find(c => c.id === containerId);
+// Show Edit Container Modal
+async function showEditContainerModal(containerId) {
+    // console.log("contenedores.js: Attempting to show edit modal for containerId:", containerId); // Debugging
+    let container = null;
+    try {
+        const apiResponse = await getContenedorById(containerId);
+        // console.log("contenedores.js: Received raw API response for edit modal:", apiResponse); // Debugging
+
+        // Check if apiResponse is directly the container object (for getById)
+        if (apiResponse && typeof apiResponse === 'object' && apiResponse.id === containerId) {
+            container = apiResponse;
+        } else if (apiResponse && apiResponse.contenedores && typeof apiResponse.contenedores === 'object' && apiResponse.contenedores.id === containerId) {
+            // Fallback for if it's wrapped in 'contenedores' property
+            container = apiResponse.contenedores;
+        } else {
+             console.error("API response for single container by ID is not as expected:", apiResponse);
+        }
+    } catch (error) {
+        console.error("Error al obtener datos para edición del contenedor:", error);
+    }
+
+    // console.log("contenedores.js: Extracted container object for edit modal:", container); // Debugging
+
     if (!container) {
         console.error("Contenedor no encontrado para editar:", containerId);
         return;
     }
 
-    document.getElementById('editContainerId').value = container.id;
-    document.getElementById('editDescripcion').value = container.descripcion || '';
-    document.getElementById('editFechaRegistro').value = container.fecha_registro || '';
-    document.getElementById('editTipoResiduo').value = container.id_tipo_residuo || ''; // Usar el ID
-    document.getElementById('editTipoContenedor').value = container.id_tipo_contenedor || ''; // Usar el ID
+    document.getElementById('editContainerId').value = container.id || '';
+    document.getElementById('editDescripcion').value = container.name || ''; // Assuming 'name' maps to 'Descripcion' for editing
+    
+    // Format lastUpdated for date input
+    const lastUpdatedDate = container.lastUpdated ? new Date(container.lastUpdated).toISOString().split('T')[0] : '';
+    document.getElementById('editFechaRegistro').value = lastUpdatedDate;
 
-    // Limpiar errores previos al abrir el modal de edición
+    // Populate dynamic select options for 'TipoResiduo' and 'TipoContenedor'
+    // Ensure these options align with what your API expects for 'type'
+    populateSelectOptions('editTipoResiduo', ['Type I', 'Type II', 'Type III', 'Químico', 'Biológico', 'Radiactivo', 'Industrial'], container.type);
+    populateSelectOptions('editTipoContenedor', ['Type I', 'Type II', 'Type III'], container.type); // Example, adjust as per your actual container types
+
+    // Clear previous errors
     displayFieldError('Descripcion', '', true);
     displayFieldError('FechaRegistro', '', true);
     displayFieldError('TipoResiduo', '', true);
@@ -277,180 +327,175 @@ export function showEditContainerModal(containerId) {
     document.getElementById('editContainerModal').classList.remove('hidden');
 }
 
-// Función para añadir un nuevo contenedor y guardarlo en localStorage
-export function addNewContainerAndSave(containerData) {
-    let currentContainers = loadContainersFromLocalStorage();
+// Helper to populate select options (if not already hardcoded in HTML)
+function populateSelectOptions(selectId, optionsArray, selectedValue = '') {
+    const selectElement = document.getElementById(selectId);
+    if (!selectElement) {
+        console.warn(`Select element with ID '${selectId}' not found.`);
+        return;
+    }
+    selectElement.innerHTML = '<option value="">Seleccione...</option>'; // Default option
+    optionsArray.forEach(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option;
+        optionElement.textContent = option;
+        if (option === selectedValue) {
+            optionElement.selected = true;
+        }
+        selectElement.appendChild(optionElement);
+    });
+}
+
+
+// Function to display/hide field error messages
+function displayFieldError(fieldId, message, isEditModal = false) {
+    const prefix = isEditModal ? 'edit' : '';
+    const errorElement = document.getElementById(prefix + fieldId + 'Error');
+    const inputElement = document.getElementById(prefix + fieldId);
     
-    // Generar un ID único para el contenedor
-    const newId = 'BOTE-' + (currentContainers.length > 0 ? Math.max(...currentContainers.map(c => parseInt(c.id.replace('BOTE-', '')))) + 1 : 1).toString().padStart(3, '0');
-    containerData.id = newId; // Asignar el ID único
-    containerData.id_contenedor = newId; // Para coincidir con el esquema de la tabla si es necesario
-
-    currentContainers.push(containerData);
-    saveContainersToLocalStorage(currentContainers);
-    console.log("Contenedor guardado en localStorage:", containerData);
-    return { id: newId }; // Devolver un objeto similar al docRef de Firebase
-}
-
-// Función para mostrar cuadro de mensaje (específica de new-container.html)
-export function showMessage(message, isError = false) {
-    const messageBox = document.getElementById('messageBox');
-    if (!messageBox) return; // Asegurarse de que el elemento existe
-
-    messageBox.textContent = message;
-    messageBox.classList.remove('hidden', 'error');
-    if (isError) {
-        messageBox.classList.add('error');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = message ? 'block' : 'none';
     }
-    messageBox.style.display = 'block';
-    setTimeout(() => {
-        messageBox.style.display = 'none';
-    }, 5000); // Ocultar después de 5 segundos
-}
-
-// Función para cargar opciones en los select de edición (específica de contenedores.html)
-export function populateEditSelects() {
-    const editTipoResiduoSelect = document.getElementById('editTipoResiduo');
-    if (editTipoResiduoSelect) {
-        editTipoResiduoSelect.innerHTML = '<option value="">Seleccione un tipo de residuo</option>';
-        TIPO_RESIDUOS_DATA.forEach(tipo => {
-            const option = document.createElement('option');
-            option.value = tipo.id;
-            option.textContent = tipo.nombre;
-            editTipoResiduoSelect.appendChild(option);
-        });
-    }
-
-    const editTipoContenedorSelect = document.getElementById('editTipoContenedor');
-    if (editTipoContenedorSelect) {
-        editTipoContenedorSelect.innerHTML = '<option value="">Seleccione un tipo de contenedor</option>';
-        TIPO_CONTENEDORES_DATA.forEach(tipo => {
-            const option = document.createElement('option');
-            option.value = tipo.id;
-            option.textContent = tipo.nombre;
-            editTipoContenedorSelect.appendChild(option);
-        });
-    }
-}
-
-// Función para inicializar la página de contenedores
-export function initializeContainersPage() {
-    let currentContainers = loadContainersFromLocalStorage();
-    if (currentContainers.length === 0) {
-        // Si no hay contenedores en localStorage, precargar algunos datos de ejemplo
-        const initialContainers = [
-            { id: 'BOTE-001', descripcion: 'Contenedor para residuos químicos del laboratorio principal.', fecha_registro: '2024-01-15', id_empresa: 'simulated-company-id', id_tipo_residuo: 1, tipo_residuo_nombre: 'Químicos', id_tipo_contenedor: 102, tipo_contenedor_nombre: 'Contenedor IBC 1000L', capacidad_maxima_contenedor: 1000 },
-            { id: 'BOTE-002', descripcion: 'Bote para desechos biológicos de la sala de cirugía.', fecha_registro: '2024-02-20', id_empresa: 'simulated-company-id', id_tipo_residuo: 2, tipo_residuo_nombre: 'Biológicos', id_tipo_contenedor: 101, tipo_contenedor_nombre: 'Barril 200L', capacidad_maxima_contenedor: 200 },
-            { id: 'BOTE-003', descripcion: 'Contenedor para residuos radiactivos de la unidad de radiología.', fecha_registro: '2024-03-10', id_empresa: 'simulated-company-id', id_tipo_residuo: 3, tipo_residuo_nombre: 'Radiactivos', id_tipo_contenedor: 103, tipo_contenedor_nombre: 'Cubo 20L', capacidad_maxima_contenedor: 20 },
-            { id: 'BOTE-004', descripcion: 'Contenedor de residuos industriales generales de la planta de ensamblaje.', fecha_registro: '2024-04-05', id_empresa: 'simulated-company-id', id_tipo_residuo: 4, tipo_residuo_nombre: 'Industriales', id_tipo_contenedor: 102, tipo_contenedor_nombre: 'Contenedor IBC 1000L', capacidad_maxima_contenedor: 1000 },
-            { id: 'BOTE-005', descripcion: 'Contenedor para ácidos corrosivos en el área de producción.', fecha_registro: '2024-05-01', id_empresa: 'simulated-company-id', id_tipo_residuo: 5, tipo_residuo_nombre: 'Corrosivos', id_tipo_contenedor: 101, tipo_contenedor_nombre: 'Barril 200L', capacidad_maxima_contenedor: 200 }
-        ];
-        saveContainersToLocalStorage(initialContainers);
-        console.log("Se cargaron datos iniciales de contenedores en localStorage.");
-    }
-    populateEditSelects(); // Poblar selects en el modal de edición
-    renderContainers(); // Renderiza los contenedores (ya sea los cargados o los iniciales)
-
-    // Adjuntar el event listener del botón "Nuevo Bote"
-    const newContainerButton = document.getElementById('newContainerBtn');
-    if (newContainerButton) {
-        console.log("Elemento 'newContainerBtn' encontrado y listener adjuntado.");
-        newContainerButton.addEventListener('click', () => {
-            console.log("Botón 'Nuevo Bote' clicado. Redirigiendo a new-container.html");
-            window.location.href = 'new-container.html';
-        });
-    } else {
-        console.error("Elemento 'newContainerBtn' NO encontrado.");
-    }
-
-    // Manejar el envío del formulario de Edición de Contenedor
-    const editContainerForm = document.getElementById('editContainerForm');
-    if (editContainerForm) {
-        editContainerForm.addEventListener('submit', (event) => {
-            event.preventDefault();
-            const containerId = document.getElementById('editContainerId').value;
-            
-            // Limpiar mensajes de error previos del modal de edición
-            displayFieldError('Descripcion', '', true);
-            displayFieldError('FechaRegistro', '', true);
-            displayFieldError('TipoResiduo', '', true);
-            displayFieldError('TipoContenedor', '', true);
-
-            const editDescripcion = document.getElementById('editDescripcion').value;
-            const editFechaRegistro = document.getElementById('editFechaRegistro').value;
-            const editTipoResiduoId = parseInt(document.getElementById('editTipoResiduo').value);
-            const editTipoContenedorId = parseInt(document.getElementById('editTipoContenedor').value);
-
-            let isValid = true;
-
-            // Validaciones para el modal de edición
-            const descripcionError = validateDescripcion(editDescripcion);
-            if (descripcionError) {
-                displayFieldError('Descripcion', descripcionError, true);
-                isValid = false;
-            }
-            if (!editFechaRegistro) {
-                displayFieldError('FechaRegistro', 'La fecha de registro es obligatoria.', true);
-                isValid = false;
-            }
-            if (isNaN(editTipoResiduoId)) {
-                displayFieldError('TipoResiduo', 'Debe seleccionar un tipo de residuo.', true);
-                isValid = false;
-            }
-            if (isNaN(editTipoContenedorId)) {
-                displayFieldError('TipoContenedor', 'Debe seleccionar un tipo de contenedor.', true);
-                isValid = false;
-            }
-
-            if (!isValid) {
-                return;
-            }
-
-            // Obtener nombres y capacidad máxima para guardar en el objeto del contenedor
-            const tipoResiduo = TIPO_RESIDUOS_DATA.find(t => t.id === editTipoResiduoId);
-            const tipoContenedor = TIPO_CONTENEDORES_DATA.find(t => t.id === editTipoContenedorId);
-
-            const updatedData = {
-                descripcion: editDescripcion,
-                fecha_registro: editFechaRegistro,
-                id_tipo_residuo: editTipoResiduoId,
-                tipo_residuo_nombre: tipoResiduo ? tipoResiduo.nombre : 'Desconocido',
-                id_tipo_contenedor: editTipoContenedorId,
-                tipo_contenedor_nombre: tipoContenedor ? tipoContenedor.nombre : 'Desconocido',
-                capacidad_maxima_contenedor: tipoContenedor ? tipoContenedor.capacidad_maxima : null,
-            };
-
-            // Encontrar el índice del contenedor y actualizarlo
-            let containers = loadContainersFromLocalStorage(); // Cargar la lista actual
-            const containerIndex = containers.findIndex(c => c.id === containerId);
-            if (containerIndex !== -1) {
-                containers[containerIndex] = { ...containers[containerIndex], ...updatedData };
-                saveContainersToLocalStorage(containers); // Guardar los cambios en localStorage
-                renderContainers(); // Volver a renderizar para reflejar los cambios
-                console.log("Contenedor actualizado exitosamente en localStorage!");
-                window.closeModal('editContainerModal'); // Usar window.closeModal
-            } else {
-                console.error("Error: Contenedor no encontrado para actualizar en localStorage.");
-            }
-        });
-    } else {
-        console.error("Elemento 'editContainerForm' NO encontrado.");
+    if (inputElement) { // Check if inputElement exists before manipulating classes
+        if (message) {
+            inputElement.classList.add('invalid');
+        } else {
+            inputElement.classList.remove('invalid');
+        }
     }
 }
 
 
-// Exportar funciones para que sean accesibles globalmente si se usan en atributos onclick
-window.closeModal = closeModal;
+// Handle Edit Container Form Submission
+document.getElementById('editContainerForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const containerId = document.getElementById('editContainerId').value;
+    
+    // Clear previous error messages
+    displayFieldError('Descripcion', '', true);
+    displayFieldError('FechaRegistro', '', true);
+    displayFieldError('TipoResiduo', '', true);
+    displayFieldError('TipoContenedor', '', true);
+
+    const editDescripcion = document.getElementById('editDescripcion').value;
+    const editFechaRegistro = document.getElementById('editFechaRegistro').value; // Keep as string for now, will convert before sending to API
+    const editTipoResiduo = document.getElementById('editTipoResiduo').value;
+    const editTipoContenedor = document.getElementById('editTipoContenedor').value;
+
+    let isValid = true;
+
+    if (!editDescripcion) {
+        displayFieldError('Descripcion', 'La descripción es obligatoria.', true);
+        isValid = false;
+    }
+    if (!editFechaRegistro) {
+        displayFieldError('FechaRegistro', 'La fecha de registro es obligatoria.', true);
+        isValid = false;
+    }
+    if (!editTipoResiduo) {
+        displayFieldError('TipoResiduo', 'El tipo de residuo es obligatorio.', true);
+        isValid = false;
+    }
+    if (!editTipoContenedor) {
+        displayFieldError('TipoContenedor', 'El tipo de contenedor es obligatorio.', true);
+        isValid = false;
+    }
+
+    if (!isValid) {
+        return;
+    }
+
+    // Prepare updated data - assuming `name` and `type` are the main fields for update
+    // You might need to fetch the full existing container data first if your API requires all fields
+    // or has specific update endpoints.
+    const updatedData = {
+        id: containerId,
+        name: editDescripcion,
+        type: editTipoContenedor, // Use TipoContenedor as the main 'type' for update
+        lastUpdated: new Date(editFechaRegistro).toISOString() // Convert date string to ISO for API
+        // Add other fields from the form if your API supports updating them
+    };
+    
+    console.log("Simulando envío de actualización a la API:", updatedData);
+
+    // *** PLACE YOUR ACTUAL API CALL HERE TO UPDATE THE CONTAINER ***
+    // Example (you'll need to implement updateContenedor in Gets.js or a dedicated API file for PUT/PATCH):
+    // try {
+    //     // const response = await updateContenedor(updatedData); // Assuming updateContenedor handles PUT/PATCH
+    //     // if (response && response.ok) { // Check for successful API response (response.ok is true for 2xx status codes)
+    //     //     console.log("Contenedor actualizado exitosamente en la API!");
+    //     // } else {
+    //     //     const errorBody = await response.text();
+    //     //     console.error("Error al actualizar contenedor en la API:", response.status, errorBody);
+    //     //     alert("Error al actualizar contenedor. Por favor, intente de nuevo.");
+    //     // }
+    // } catch (error) {
+    //     console.error("Error en la llamada a la API de actualización:", error);
+    //     alert("Error de conexión al intentar actualizar contenedor.");
+    // }
+
+    closeModal('editContainerModal');
+    // After an update, it's good practice to re-render from API to reflect actual changes
+    renderContainers(); 
+});
+
+// Function to close any modal
+function closeModal(modalId) {
+    const modalElement = document.getElementById(modalId);
+    if (modalElement) {
+        modalElement.classList.add('hidden');
+    }
+}
+window.closeModal = closeModal; // Make global for HTML onclick
+
+
+// Handle Search (real-time)
+async function handleContainerSearch() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    let allContainers = [];
+    try {
+        const apiResponse = await getContenedores(); // Re-fetch all containers for search
+        if (Array.isArray(apiResponse)) {
+            allContainers = apiResponse;
+        } else if (apiResponse && Array.isArray(apiResponse.contenedores)) {
+            allContainers = apiResponse.contenedores;
+        } else {
+            console.error("API response for search is not as expected:", apiResponse);
+        }
+    } catch (error) {
+        console.error("Error al obtener contenedores para la búsqueda:", error);
+        allContainers = containers; // Fallback to currently loaded 'containers' if API fails for search
+    }
+
+    if (searchTerm === "") {
+        renderContainers(allContainers); // Show all containers if search is empty
+        return;
+    }
+
+    const filteredContainers = allContainers.filter(container => {
+        return (
+            (container.id && container.id.toLowerCase().includes(searchTerm)) ||
+            (container.deviceID && container.deviceID.toLowerCase().includes(searchTerm)) ||
+            (container.name && container.name.toLowerCase().includes(searchTerm)) ||
+            (container.type && container.type.toLowerCase().includes(searchTerm)) ||
+            (container.status && container.status.toLowerCase().includes(searchTerm))
+        );
+    });
+    renderContainers(filteredContainers);
+}
 window.handleContainerSearch = handleContainerSearch;
-window.renderContainers = renderContainers; 
-window.attachButtonListeners = attachButtonListeners; 
-window.showViewContainerModal = showViewContainerModal; 
-window.showEditContainerModal = showEditContainerModal; 
-window.displayFieldError = displayFieldError; 
-window.validateDescripcion = validateDescripcion; 
-window.addNewContainerAndSave = addNewContainerAndSave; 
-window.showMessage = showMessage;
-window.TIPO_RESIDUOS_DATA = TIPO_RESIDUOS_DATA;
-window.TIPO_CONTENEDORES_DATA = TIPO_CONTENEDORES_DATA;
-window.populateEditSelects = populateEditSelects; // Exportar para uso en contenedores.html
-window.initializeContainersPage = initializeContainersPage; // Exportar la función de inicialización
+
+
+// Redirect to New Container Page (if you have one)
+document.getElementById('newContainerBtn').addEventListener('click', () => {
+    // window.location.href = 'registrarContenedor.html'; // Example for a registration page
+    alert("Funcionalidad para 'Nuevo Contenedor' no implementada en este ejemplo.");
+});
+
+
+// Load and render containers when the window loads
+window.onload = () => {
+    renderContainers(); // Render containers loaded from the API
+};
