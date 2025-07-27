@@ -1,0 +1,74 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\erick\\OneDrive\\Documentos\\Trabajos escolares\\Cuatri5\\WEB\\backend\\backend\\TrashNTrack\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|c:\\users\\erick\\onedrive\\documentos\\trabajos escolares\\cuatri5\\web\\backend\\backend\\trashntrack\\trashntrack\\models\\incidentes\\incidentemapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|solutionrelative:trashntrack\\models\\incidentes\\incidentemapper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|c:\\users\\erick\\onedrive\\documentos\\trabajos escolares\\cuatri5\\web\\backend\\backend\\trashntrack\\trashntrack\\models\\incidentes\\incidente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|solutionrelative:trashntrack\\models\\incidentes\\incidente.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{605322a2-17ae-43f4-b60f-766556e46c87}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Incidente.cs",
+              "DocumentMoniker": "C:\\Users\\erick\\OneDrive\\Documentos\\Trabajos escolares\\Cuatri5\\WEB\\backend\\backend\\TrashNTrack\\TrashNTrack\\Models\\Incidentes\\Incidente.cs",
+              "RelativeDocumentMoniker": "TrashNTrack\\Models\\Incidentes\\Incidente.cs",
+              "ToolTip": "C:\\Users\\erick\\OneDrive\\Documentos\\Trabajos escolares\\Cuatri5\\WEB\\backend\\backend\\TrashNTrack\\TrashNTrack\\Models\\Incidentes\\Incidente.cs",
+              "RelativeToolTip": "TrashNTrack\\Models\\Incidentes\\Incidente.cs",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAkwDYAAACYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-27T23:13:22.719Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "IncidenteMapper.cs",
+              "DocumentMoniker": "C:\\Users\\erick\\OneDrive\\Documentos\\Trabajos escolares\\Cuatri5\\WEB\\backend\\backend\\TrashNTrack\\TrashNTrack\\Models\\Incidentes\\IncidenteMapper.cs",
+              "RelativeDocumentMoniker": "TrashNTrack\\Models\\Incidentes\\IncidenteMapper.cs",
+              "ToolTip": "C:\\Users\\erick\\OneDrive\\Documentos\\Trabajos escolares\\Cuatri5\\WEB\\backend\\backend\\TrashNTrack\\TrashNTrack\\Models\\Incidentes\\IncidenteMapper.cs",
+              "RelativeToolTip": "TrashNTrack\\Models\\Incidentes\\IncidenteMapper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-27T23:11:46.193Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
