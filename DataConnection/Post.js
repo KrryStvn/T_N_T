@@ -1,5 +1,4 @@
-import { config } from "./Config";
-import { fetchData } from "./Gets";
+import { config } from "./Config.js";
 
 //este método contiene la lógica de como se maneja el envío de información del método post
 export async function fetchPost(endpoint,info){
@@ -54,7 +53,7 @@ export async function postIncidentes(newIncidente){
 // =======================================
 // POST PARA REPORTES
 // =======================================
-export async function postIncidentes(newReporte){
+export async function postReportes(newReporte){
     if(!newReporte){
         throw new Error("Los datos no pueden estar vacíos");
     }
@@ -78,7 +77,7 @@ export async function postUsuarios(newUsuario){
     if(!newUsuario){
         throw new Error("Los datos no pueden estar vacíos");
     }
-    return fetchPost("Usuarios", newReporte);
+    return fetchPost("Usuarios", newUsuario);
 }
 /*  Información que espera el método
     nombre,
