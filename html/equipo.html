@@ -3,395 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equipo - Dashboard de Residuos Tóxicos</title>
+    <title>Equipo - Dashboard Logístico</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <link href="../css/dashboard.css" rel="stylesheet">
     <link href="../css/sidebar.css" rel="stylesheet">
-    <link href="../css/equipo.css" rel="stylesheet">
-</head>
+    <link href="../css/equipo.css" rel="stylesheet"> </head>
 <body>
     <div class="dashboard-container">
         <div id="sidebar-placeholder"></div>
-        <!-- Main Content -->
+
         <main class="main-content">
-            <!-- Header -->
             <header class="header">
                 <div class="page-title">
                     <i class="fas fa-users" style="color: #22d3ee;"></i>
-                    <h1>Gestión de Equipo</h1>
+                    <h1>Gestión de Usuarios</h1>
                 </div>
                 <div class="header-actions">
-                    <button class="btn btn-secondary">
-                        <i class="fas fa-calendar"></i>
-                        Horarios
-                    </button>
-                    <button class="btn btn-primary">
-                        <i class="fas fa-user-plus"></i>
-                        Nuevo Empleado
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Buscar usuario..." onkeyup="handleUserSearch()">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <button class="btn btn-primary" id="newUserBtn">
+                        <i class="fas fa-user-plus"></i> Nuevo Usuario
                     </button>
                 </div>
             </header>
 
-            <!-- Stats Cards -->
-           
-
-            <!-- Team Section -->
-            <section class="team-section">
-                <div class="section-header">
-                    <h3 class="section-title">Personal de Recolección</h3>
-                    <div class="search-box">
-                        <input type="text" placeholder="Buscar empleado...">
-                        <i class="fas fa-search"></i>
+            <section class="user-grid-section">
+                <div class="user-grid" id="userGrid">
                     </div>
-                </div>
-
-                <div class="team-grid">
-                    <div class="team-card">
-                        <div class="member-header">
-                            <div class="member-avatar">CR</div>
-                            <div class="member-info">
-                                <h3>Carlos Rodríguez</h3>
-                                <div class="member-role">Conductor Senior</div>
-                            </div>
-                        </div>
-                        <div class="member-details">
-                            <div class="detail-row">
-                                <span class="detail-label">ID Empleado:</span>
-                                <span class="detail-value">EMP-001</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Zona asignada:</span>
-                                <span class="detail-value">Zona Norte</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Camión:</span>
-                                <span class="detail-value">CAM-001</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Experiencia:</span>
-                                <span class="detail-value">8 años</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Certificaciones:</span>
-                                <span class="detail-value">Residuos Peligrosos, Manejo Químicos</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Último turno:</span>
-                                <span class="detail-value">Hoy 06:00 - 14:00</span>
-                            </div>
-                        </div>
-                        <div class="member-actions">
-                            <button class="action-btn btn-contact">Contactar</button>
-                            <button class="action-btn btn-edit">Editar</button>
-                        </div>
-                    </div>
-
-                    <div class="team-card">
-                        <div class="member-header">
-                            <div class="member-avatar">AG</div>
-                            <div class="member-info">
-                                <h3>Ana García</h3>
-                                <div class="member-role">Supervisora de Zona</div>
-                            </div>
-                        </div>
-                        <div class="member-details">
-                            <div class="detail-row">
-                                <span class="detail-label">ID Empleado:</span>
-                                <span class="detail-value">EMP-002</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Zona asignada:</span>
-                                <span class="detail-value">Zona Centro</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Equipo a cargo:</span>
-                                <span class="detail-value">6 personas</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Experiencia:</span>
-                                <span class="detail-value">12 años</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Certificaciones:</span>
-                                <span class="detail-value">Supervisión, Seguridad Industrial</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Último turno:</span>
-                                <span class="detail-value">Hoy 08:00 - 16:00</span>
-                            </div>
-                        </div>
-                        <div class="member-actions">
-                            <button class="action-btn btn-contact">Contactar</button>
-                            <button class="action-btn btn-edit">Editar</button>
-                        </div>
-                    </div>
-
-                    <div class="team-card">
-                        <div class="member-header">
-                            <div class="member-avatar">MT</div>
-                            <div class="member-info">
-                                <h3>Miguel Torres</h3>
-                                <div class="member-role">Conductor</div>
-                            </div>
-                        </div>
-                        <div class="member-details">
-                            <div class="detail-row">
-                                <span class="detail-label">ID Empleado:</span>
-                                <span class="detail-value">EMP-003</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Zona asignada:</span>
-                                <span class="detail-value">Zona Sur</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Camión:</span>
-                                <span class="detail-value">CAM-003</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Experiencia:</span>
-                                <span class="detail-value">3 años</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Capacitación actual:</span>
-                                <span class="detail-value">Manejo de Residuos Radiactivos</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Progreso:</span>
-                                <span class="detail-value">75% completado</span>
-                            </div>
-                        </div>
-                        <div class="member-actions">
-                            <button class="action-btn btn-contact">Contactar</button>
-                            <button class="action-btn btn-edit">Editar</button>
-                        </div>
-                    </div>
-
-                    <div class="team-card">
-                        <div class="member-header">
-                            <div class="member-avatar">LM</div>
-                            <div class="member-info">
-                                <h3>Laura Martínez</h3>
-                                <div class="member-role">Coordinadora de Residuos</div>
-                            </div>
-                        </div>
-                        <div class="member-details">
-                            <div class="detail-row">
-                                <span class="detail-label">ID Empleado:</span>
-                                <span class="detail-value">EMP-004</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Especialidad:</span>
-                                <span class="detail-value">Residuos Químicos</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Ubicación:</span>
-                                <span class="detail-value">Centro de Control</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Experiencia:</span>
-                                <span class="detail-value">6 años</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Certificaciones:</span>
-                                <span class="detail-value">Química Industrial, Gestión Ambiental</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Último turno:</span>
-                                <span class="detail-value">Hoy 09:00 - 17:00</span>
-                            </div>
-                        </div>
-                        <div class="member-actions">
-                            <button class="action-btn btn-contact">Contactar</button>
-                            <button class="action-btn btn-edit">Editar</button>
-                        </div>
-                    </div>
-
-                    <div class="team-card">
-                        <div class="member-header">
-                            <div class="member-avatar">RS</div>
-                            <div class="member-info">
-                                <h3>Roberto Silva</h3>
-                                <div class="member-role">Conductor</div>
-                            </div>
-                        </div>
-                        <div class="member-details">
-                            <div class="detail-row">
-                                <span class="detail-label">ID Empleado:</span>
-                                <span class="detail-value">EMP-005</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Zona asignada:</span>
-                                <span class="detail-value">Zona Oeste</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Camión:</span>
-                                <span class="detail-value">CAM-005</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Experiencia:</span>
-                                <span class="detail-value">5 años</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Período vacaciones:</span>
-                                <span class="detail-value">25 Nov - 5 Dic</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Regreso:</span>
-                                <span class="detail-value">6 de Diciembre</span>
-                            </div>
-                        </div>
-                        <div class="member-actions">
-                            <button class="action-btn btn-contact">Contactar</button>
-                            <button class="action-btn btn-edit">Editar</button>
-                        </div>
-                    </div>
-
-                    <div class="team-card">
-                        <div class="member-header">
-                            <div class="member-avatar">PL</div>
-                            <div class="member-info">
-                                <h3>Patricia López</h3>
-                                <div class="member-role">Técnico en Seguridad</div>
-                            </div>
-                        </div>
-                        <div class="member-details">
-                            <div class="detail-row">
-                                <span class="detail-label">ID Empleado:</span>
-                                <span class="detail-value">EMP-006</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Especialidad:</span>
-                                <span class="detail-value">Seguridad Industrial</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Área de trabajo:</span>
-                                <span class="detail-value">Todas las zonas</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Experiencia:</span>
-                                <span class="detail-value">10 años</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Certificaciones:</span>
-                                <span class="detail-value">Seguridad Industrial, Primeros Auxilios</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Último turno:</span>
-                                <span class="detail-value">Hoy 07:00 - 15:00</span>
-                            </div>
-                        </div>
-                        <div class="member-actions">
-                            <button class="action-btn btn-contact">Contactar</button>
-                            <button class="action-btn btn-edit">Editar</button>
-                        </div>
-                    </div>
-                </div>
             </section>
 
-            <!-- Schedule Section -->
-            <section class="schedule-section">
-                <div class="schedule-card">
-                    <div class="schedule-header">
-                        <h3 class="schedule-title">Horario de Hoy</h3>
-                        <span style="font-size: 12px; color: #64748b;">Miércoles, 27 de Noviembre</span>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">06:00</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Carlos Rodríguez</div>
-                            <div class="schedule-task">Inicio turno - Zona Norte</div>
+            <div id="viewUserModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeModal('viewUserModal')">&times;</span>
+                    <h2>Detalles del Usuario <span id="viewUserNameFull"></span></h2>
+                    <div class="modal-form-group">
+                        <p><strong>ID de Usuario:</strong> <span id="viewUserId"></span></p>
+                        <p><strong>Nombre Completo:</strong> <span id="viewUserName"></span></p>
+                        <p><strong>Correo Electrónico:</strong> <span id="viewUserEmail"></span></p>
+                        <p><strong>Teléfono:</strong> <span id="viewUserPhone"></span></p>
+                        <p><strong>Tipo de Usuario:</strong> <span id="viewUserType"></span></p>
+                        <p><strong>UID de Firebase:</strong> <span id="viewUserFirebaseUid"></span></p>
                         </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">06:30</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Miguel Torres</div>
-                            <div class="schedule-task">Inicio turno - Zona Sur</div>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">07:00</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Patricia López</div>
-                            <div class="schedule-task">Inspección de seguridad</div>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">08:00</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Ana García</div>
-                            <div class="schedule-task">Supervisión - Zona Centro</div>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">09:00</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Laura Martínez</div>
-                            <div class="schedule-task">Coordinación de residuos</div>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">10:00</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Equipo Técnico</div>
-                            <div class="schedule-task">Mantenimiento de sensores</div>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">14:00</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Carlos Rodríguez</div>
-                            <div class="schedule-task">Fin de turno</div>
-                        </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">14:30</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Turno Vespertino</div>
-                            <div class="schedule-task">Cambio de guardia</div>
-                        </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-small btn-secondary" onclick="closeModal('viewUserModal')">Cerrar</button>
                     </div>
                 </div>
+            </div>
 
-                <div class="schedule-card">
-                    <div class="schedule-header">
-                        <h3 class="schedule-title">Capacitaciones Programadas</h3>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">Hoy</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Miguel Torres</div>
-                            <div class="schedule-task">Residuos Radiactivos - Módulo 3</div>
+            <div id="editUserModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeModal('editUserModal')">&times;</span>
+                    <h2>Editar Usuario <span id="editUserNameFull"></span></h2>
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="modal-form-group">
+                            <label for="editNombre">Nombre:</label>
+                            <input type="text" id="editNombre" required>
+                            <div id="editNombreError" class="error-message"></div>
                         </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">Mañana</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Nuevo Personal</div>
-                            <div class="schedule-task">Inducción de Seguridad</div>
+                        <div class="modal-form-group">
+                            <label for="editPrimerApell">Primer Apellido:</label>
+                            <input type="text" id="editPrimerApell" required>
+                            <div id="editPrimerApellError" class="error-message"></div>
                         </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">Viernes</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Todo el Equipo</div>
-                            <div class="schedule-task">Simulacro de Emergencia</div>
+                        <div class="modal-form-group">
+                            <label for="editSecundoApell">Segundo Apellido:</label>
+                            <input type="text" id="editSecundoApell">
+                            <div id="editSecundoApellError" class="error-message"></div>
                         </div>
-                    </div>
-                    <div class="schedule-item">
-                        <div class="schedule-time">Lunes</div>
-                        <div class="schedule-info">
-                            <div class="schedule-name">Conductores</div>
-                            <div class="schedule-task">Actualización Normativa</div>
+                        <div class="modal-form-group">
+                            <label for="editCorreo">Correo Electrónico:</label>
+                            <input type="email" id="editCorreo" required>
+                            <div id="editCorreoError" class="error-message"></div>
                         </div>
-                    </div>
+                        <div class="modal-form-group">
+                            <label for="editNumeroTelefono">Número de Teléfono:</label>
+                            <input type="tel" id="editNumeroTelefono" required>
+                            <div id="editNumeroTelefonoError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="editTipoUsuario">Tipo de Usuario:</label>
+                            <select id="editTipoUsuario" required>
+                                <option value="">Seleccione un tipo</option>
+                                <option value="recolector">Recolector</option>
+                                <option value="administrador">Administrador</option>
+                                </select>
+                            <div id="editTipoUsuarioError" class="error-message"></div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-small btn-secondary" onclick="closeModal('editUserModal')">Cancelar</button>
+                            <button type="submit" class="btn-small btn-primary">Guardar Cambios</button>
+                        </div>
+                    </form>
                 </div>
-            </section>
+            </div>
+
+            <div id="addUserModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button" onclick="closeModal('addUserModal')">&times;</span>
+                    <h2>Registrar Nuevo Usuario</h2>
+                    <form id="addUserForm">
+                        <div class="modal-form-group">
+                            <label for="newNombre">Nombre:</label>
+                            <input type="text" id="newNombre" required>
+                            <div id="newNombreError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="newPrimerApell">Primer Apellido:</label>
+                            <input type="text" id="newPrimerApell" required>
+                            <div id="newPrimerApellError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="newSecundoApell">Segundo Apellido:</label>
+                            <input type="text" id="newSecundoApell">
+                            <div id="newSecundoApellError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="newCorreo">Correo Electrónico:</label>
+                            <input type="email" id="newCorreo" required>
+                            <div id="newCorreoError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="newNumeroTelefono">Número de Teléfono:</label>
+                            <input type="tel" id="newNumeroTelefono" required>
+                            <div id="newNumeroTelefonoError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="newFirebaseUid">Firebase ID:</label>
+                            <input type="tel" id="newFirebaseUid" required>
+                            <div id="newFirebaseUidError" class="error-message"></div>
+                        </div>
+                        <div class="modal-form-group">
+                            <label for="newTipoUsuario">Tipo de Usuario:</label>
+                            <select id="newTipoUsuario" required>
+                                <option value="">Seleccione un tipo</option>
+                                <option value="recolector">Recolector</option>
+                                <option value="administrador">Administrador</option>
+                            </select>
+                            <div id="newTipoUsuarioError" class="error-message"></div>
+                        </div>
+                        <div class="modal-actions">
+                            <button type="button" class="btn-small btn-secondary" onclick="closeModal('addUserModal')">Cancelar</button>
+                            <button type="submit" class="btn-small btn-primary">Registrar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
         </main>
     </div>
 
-    <script src="../js/equipo.js"></script>
+    <script type="module" src="../js/equipo.js"></script> 
     <script src="../js/sidebar.js"></script>
     <script src="../js/authGuard.js"></script>
 </body>

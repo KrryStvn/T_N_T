@@ -44,14 +44,13 @@
                 type="text"
                 id="searchIncidentesInput"
                 placeholder="Buscar por nombre o descripción..."
-                onkeyup="filterIncidentes()"
               />
             </div>
-            <select id="usuarioIncidentesFilter" onchange="filterIncidentes()">
+            <select id="usuarioIncidentesFilter">
               <option value="">Todos los usuarios</option>
               <!-- Cargado con JS -->
             </select>
-            <select id="fechaIncidentesFilter" onchange="filterIncidentes()">
+            <select id="fechaIncidentesFilter">
               <option value="">Todas las fechas</option>
               <option value="hoy">Hoy</option>
               <option value="semana">Esta semana</option>
@@ -59,15 +58,11 @@
             </select>
           </div>
 
-          <!-- Lista de incidentes movida aquí -->
+          <!-- Lista de incidentes -->
           <ul id="lista-incidentes"></ul>
 
-          <!-- Formulario de Nuevo Incidente (oculto por defecto) -->
-          <div
-            id="formNuevoIncidente"
-            class="card form-card"
-            style="display: none; margin-top: 40px"
-          >
+          <!-- Formulario de Nuevo Incidente -->
+          <div id="formNuevoIncidente" class="card form-card" style="display: none; margin-top: 40px">
             <div class="card-header">
               <h2>Nuevo Incidente</h2>
               <p>Completa todos los campos para registrar un nuevo incidente</p>
@@ -77,62 +72,31 @@
                 <div class="form-grid">
                   <div class="form-group">
                     <label for="incidenteNombre">Nombre *</label>
-                    <input
-                      type="text"
-                      id="incidenteNombre"
-                      name="nombre"
-                      required
-                      placeholder="Nombre del incidente"
-                    />
+                    <input type="text" id="incidenteNombre" name="nombre" required placeholder="Nombre del incidente" />
                   </div>
                   <div class="form-group">
                     <label for="incidenteFechaIncidente">Fecha del Incidente *</label>
-                    <input
-                      type="datetime-local"
-                      id="incidenteFechaIncidente"
-                      name="fecha_incidente"
-                      required
-                    />
+                    <input type="datetime-local" id="incidenteFechaIncidente" name="fecha_incidente" required />
                   </div>
                   <div class="form-group">
                     <label for="incidentePhotoUrl">URL de la Foto</label>
-                    <input
-                      type="url"
-                      id="incidentePhotoUrl"
-                      name="photo_url"
-                      placeholder="URL de la imagen del incidente"
-                    />
+                    <input type="url" id="incidentePhotoUrl" name="photo_url" placeholder="URL de la imagen del incidente" />
                   </div>
                   <div class="form-group">
                     <label for="incidenteIdUsuario">ID Usuario *</label>
-                    <input
-                      type="number"
-                      id="incidenteIdUsuario"
-                      name="id_usuario"
-                      required
-                      min="1"
-                      placeholder="ID del usuario que reporta"
-                    />
+                    <input type="number" id="incidenteIdUsuario" name="id_usuario" required min="1" placeholder="ID del usuario que reporta" />
                   </div>
                   <div class="form-group full-width">
                     <label for="incidenteDescripcion">Descripción *</label>
-                    <textarea
-                      id="incidenteDescripcion"
-                      name="descripcion"
-                      rows="4"
-                      required
-                      placeholder="Descripción detallada del incidente"
-                    ></textarea>
+                    <textarea id="incidenteDescripcion" name="descripcion" rows="4" required placeholder="Descripción detallada del incidente"></textarea>
                   </div>
                 </div>
                 <div class="form-actions">
                   <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save"></i>
-                    Crear Incidente
+                    <i class="fas fa-save"></i> Crear Incidente
                   </button>
                   <button type="button" class="btn btn-secondary" onclick="resetIncidenteForm()">
-                    <i class="fas fa-undo"></i>
-                    Limpiar
+                    <i class="fas fa-undo"></i> Limpiar
                   </button>
                   <button type="button" class="btn btn-outline" onclick="toggleNuevoIncidente()">
                     Cancelar
@@ -169,5 +133,17 @@
       }
     }
   </script>
+  <!-- Modal para ver detalles del incidente -->
+<div id="modalIncidente" class="modal" style="display:none;">
+  <div class="modal-content">
+    <span class="close-btn">&times;</span>
+    <h2 id="modalTitulo"></h2>
+    <p id="modalDescripcion"></p>
+    <p><strong>Fecha:</strong> <span id="modalFecha"></span></p>
+    <p><strong>Estado:</strong> <span id="modalEstado">Pendiente</span></p>
+    <p><strong>Usuario:</strong> <span id="modalUsuario"></span></p>
+    <img id="modalImagen" src="" alt="Imagen del incidente" />
+  </div>
+</div>
 </body>
 </html>

@@ -77,7 +77,7 @@ export async function postUsuarios(newUsuario){
     if(!newUsuario){
         throw new Error("Los datos no pueden estar vacíos");
     }
-    return fetchPost("Usuarios", newReporte);
+    return fetchPost("Usuarios", newUsuario);
 }
 /*  Información que espera el método
     nombre,
