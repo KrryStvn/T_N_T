@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DWHyOK60mWA=",
+  "dgSpecHash": "YgNm7Z25yrI=",
   "success": true,
-  "projectFilePath": "C:\\Users\\erick\\OneDrive\\Documentos\\Trabajos escolares\\Cuatri5\\WEB\\backend\\backend\\TrashNTrack\\TrashNTrack\\TrashNTrack.csproj",
+  "projectFilePath": "C:\\xampp\\htdocs\\TrashNTrack\\T_N_T\\backend\\TrashNTrack\\TrashNTrack\\TrashNTrack.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\erick\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\erick\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",

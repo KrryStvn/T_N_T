@@ -1,156 +1,170 @@
-import { config } from './Config.js';
 
 // Función auxiliar para todas las llamadas GET
-export async function fetchData(endpoint){
+async function fetchData(endpoint){
     var url = config.api.url + endpoint;
-    console.log(url);
+    console.log(`Intentando GET desde: ${url}`);
 
-    return await fetch (url)
-    .then ((result)=>{return result.json(); })
-    .catch ((error)=> {console.log(error)});
+    try {
+        const response = await fetch(url);
+
+        // Verificar si la respuesta fue exitosa (código de estado 2xx)
+        if (!response.ok) {
+            const errorText = await response.text(); // Intentar leer el cuerpo del error
+            const errorMessage = `Error HTTP ${response.status}: ${errorText || response.statusText}`;
+            console.error(`Error al obtener datos desde ${url}:`, errorMessage);
+            throw new Error(errorMessage); // Lanzar el error para que sea capturado por el llamador
+        }
+
+        const result = await response.json();
+        console.log(`Datos obtenidos de ${url}:`, result);
+        return result;
+    } catch (error) {
+        console.error("Error al realizar la solicitud GET:", error);
+        throw error; // Re-lanzar el error para que el llamador pueda manejarlo
+    }
 }
 
 // =======================================
 // GETS PARA Usuarios
 // =======================================
-export async function getUsuarios() {
+ async function getUsuarios() {
     return fetchData("Usuarios");
 }
 
-export async function getUserById(id) {
+ async function getUserById(id) {
     return fetchData(`Usuarios/${id}`);
 }
 
 // =======================================
 // GETS PARA SENSORES
 // =======================================
-export async function getSensores() {
+ async function getSensores() {
     return fetchData("Sensores");
 }
 
-export async function getSensoresById(id) {
+ async function getSensoresById(id) {
     return fetchData(`Sensores/`+id);
 }
 
-export async function getSensoresByContenedor(contenedorId){
+ async function getSensoresByContenedor(contenedorId){
     return fetchData(`Sensores/por-contenedor`+contenedorId);
 }
 
 // =======================================
 // GETS PARA RUTAS
 // =======================================
-export async function getRutas() {
+ async function getRutas() {
     return fetchData("Rutas");
 }
 
-export async function getRutasById(id) {
+ async function getRutasById(id) {
     return fetchData(`Rutas/`+id);
 }
 
-export async function getRutasByEmpresa(empresaId){
+ async function getRutasByEmpresa(empresaId){
     return fetchData(`Sensores/por-contenedor`+empresaId);
 }
 
-export async function getRutasByPlanta(plantaId){
+ async function getRutasByPlanta(plantaId){
     return fetchData(`Sensores/por-contenedor`+plantaId);
 }
 
 // =======================================
 // GETS PARA REPORTES
 // =======================================
-export async function getReportes() {
+ async function getReportes() {
     return fetchData("Reportes");
 }
 
-export async function getReportesById(id) {
+ async function getReportesById(id) {
     return fetchData(`Reportes/`+id);
 }
 
-export async function getReportesByUsuario(usuarioId){
+ async function getReportesByUsuario(usuarioId){
     return fetchData(`Reportes/por-contenedor`+usuarioId);
 }
 
-export async function getReportesByFecha() {
+ async function getReportesByFecha() {
     return fetchData(`Reportes/por-fecha`);
 }
 
-export async function getReportesByUid(firebaseUid){
+ async function getReportesByUid(firebaseUid){
     return fetchData(`Reportes/uid`+firebaseUid);
 }
 
 // =======================================
 // GETS PARA PLANTAS
 // =======================================
-export async function getPlantas() {
+ async function getPlantas() {
     return fetchData("Plantas");
 }
 
-export async function getPlantasById(id) {
+ async function getPlantasById(id) {
     return fetchData(`Plantas/`+id);
 }
 
-export async function getPlantasByUbicacion(ubicacionId){
+ async function getPlantasByUbicacion(ubicacionId){
     return fetchData(`Plantas/por-contenedor`+ubicacionId);
 }
 
 // =======================================
 // GETS PARA ITINERARIOS
 // =======================================
-export async function getItinerarios() {
+ async function getItinerarios() {
     return fetchData("Itinerarios");
 }
 
-export async function getItinerariosById(id) {
+ async function getItinerariosById(id) {
     return fetchData(`Itinerarios/`+id);
 }
 
-export async function getItinerariosByUsuario(usuarioId){
+ async function getItinerariosByUsuario(usuarioId){
     return fetchData(`Itinerarios/por-contenedor`+usuarioId);
 }
 
-export async function getItinerariosByRuta(rutaId){
+ async function getItinerariosByRuta(rutaId){
     return fetchData(`Itinerarios/por-ruta`+rutaId);
 }
 
-export async function getItinerariosByEstado(estado){
+ async function getItinerariosByEstado(estado){
     return fetchData(`Itinerarios/por-ruta`+estado);
 }
 
 // =======================================
 // GETS PARA INCIDENTES
 // =======================================
-export async function getIncidentes() {
+ async function getIncidentes() {
     return fetchData("Incidentes");
 }
 
-export async function getIncidentesById(id) {
+ async function getIncidentesById(id) {
     return fetchData(`Incidentes/`+id);
 }
 
-export async function getIncidentesByUsuario(usuarioId){
+ async function getIncidentesByUsuario(usuarioId){
     return fetchData(`Incidentes/por-usuario`+usuarioId);
 }
 
-export async function getIncidentesByFecha() {
+ async function getIncidentesByFecha() {
     return fetchData(`Incidentes/por-fecha`);
 }
 
 // =======================================
 // GETS PARA EMPRESAS
 // =======================================
-export async function getEmpresas() {
+ async function getEmpresas() {
     return fetchData("Empresas");
 }
 
-export async function getEmpresasById(id) {
+ async function getEmpresasById(id) {
     return fetchData(`Empresas/`+id);
 }
 
-export async function getEmpresasByUbicacion(ubicacionId){
+ async function getEmpresasByUbicacion(ubicacionId){
     return fetchData(`Empresas/por-usuario`+ubicacionId);
 }
 /*
-export async function getEmpresasByNombre() {
+ async function getEmpresasByNombre() {
     return fetchData("Empresas/buscar");
 }
 */
@@ -158,53 +172,53 @@ export async function getEmpresasByNombre() {
 // =======================================
 // GETS PARA CONTENEDORES
 // =======================================
-export async function getContenedores() {
+ async function getContenedores() {
     return fetchData("Containers");
 }
 
-export async function getContenedoresById(id) {
+ async function getContenedoresById(id) {
     return fetchData(`Containers/${id}`);
 }
 
-export async function getContenedoresByEmpresa(idEmpresa){
+ async function getContenedoresByEmpresa(idEmpresa){
     return fetchData(`Containers/`+idEmpresa);
 }
-export async function getContenedoresByTipoResiduo(tipoResiduoId){
+ async function getContenedoresByTipoResiduo(tipoResiduoId){
     return fetchData(`Containers/por-tipo-residuo/`+tipoResiduoId);
 }
-export async function getContenedoresByEstado(estado){
+ async function getContenedoresByEstado(estado){
     return fetchData(`Containers/por-estado/`+estado);
 }
 
 // =======================================
 // GETS PARA CAMIONES
 // =======================================
-export async function getCamiones() {
+ async function getCamiones() {
     return fetchData("Camiones");
 }
 
-export async function getCamionesById(id) {
+ async function getCamionesById(id) {
     return fetchData(`Camiones/${id}`);
 }
 
 // =======================================
 // GETS PARA ALERTAS
 // =======================================
-export async function getAletas() {
+ async function getAletas() {
     return fetchData("Alertas");
 }
 
-export async function getAlertasById(id) {
+ async function getAlertasById(id) {
     return fetchData(`Alertas/`+id);
 }
 
-export async function getAlertasBySensor(sensorId){
+ async function getAlertasBySensor(sensorId){
     return fetchData(`Alertas/por-sensor/`+sensorId);
 }
 
-export async function getAlertasByTipo(tipoAlerta){
+ async function getAlertasByTipo(tipoAlerta){
     return fetchData(`Alertas/por-tipo/`+tipoAlerta);
 }
-export async function getAletasByFecha() {
+ async function getAletasByFecha() {
     return fetchData("Alertas/por-fecha");
 }
