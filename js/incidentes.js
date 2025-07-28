@@ -1,3 +1,5 @@
+// archivo: incidentes.js
+import { getIncidentes } from '../DataConnection/Gets.js';
 
 async function cargarIncidentes() {
     const respuesta = await getIncidentes(); // Llama al GET
