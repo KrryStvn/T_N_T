@@ -7,32 +7,33 @@ public class Ruta
 {
     #region statements
     private static string RutaGetAll = @"
-        SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion, id_empresa, id_planta 
+        SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion,estado,id_usuario_asignado,progreso_ruta,fecha_inicio_real,start_offset_minutes
         FROM Rutas";
 
     private static string RutaGetById = @"
-        SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion, id_empresa, id_planta 
-        FROM Rutas 
+SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion,estado,id_usuario_asignado,progreso_ruta,fecha_inicio_real,start_offset_minutes        FROM Rutas 
         WHERE id_ruta = @Id";
 
     private static string RutaGetByEmpresa = @"
-        SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion, id_empresa, id_planta 
-        FROM Rutas 
+SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion,estado,id_usuario_asignado,progreso_ruta,fecha_inicio_real,start_offset_minutes        FROM Rutas 
         WHERE id_empresa = @EmpresaId";
 
     private static string RutaGetByPlanta = @"
-        SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion, id_empresa, id_planta 
-        FROM Rutas 
+SELECT id_ruta, nombre_ruta, fecha_creacion, descripcion,estado,id_usuario_asignado,progreso_ruta,fecha_inicio_real,start_offset_minutes        FROM Rutas 
         WHERE id_planta = @PlantaId";
     #endregion
 
     #region properties
     public int IdRuta { get; set; }
     public string NombreRuta { get; set; }
-    public DateTime FechaCreacion { get; set; }
+    public string FechaCreacion { get; set; }
     public string Descripcion { get; set; }
-    public int IdEmpresa { get; set; }
-    public int IdPlanta { get; set; }
+    public string Estado { get; set; }
+    public int Id_usuario_asignado { get; set; }
+    public int Progreso_ruta { get; set; }
+    public string Fecha_inicio_real { get; set; }
+    public int Start_offset_minutes { get; set; }
+
     #endregion
 
     #region constructors
@@ -40,20 +41,26 @@ public class Ruta
     {
         IdRuta = 0;
         NombreRuta = "";
-        FechaCreacion = DateTime.MinValue;
+        FechaCreacion = "";
         Descripcion = "";
-        IdEmpresa = 0;
-        IdPlanta = 0;
+        Estado = "";
+        Id_usuario_asignado = 0;
+        Progreso_ruta = 0;
+        Fecha_inicio_real = "";
+        Start_offset_minutes = 0;
     }
 
-    public Ruta(int id, string nombre, DateTime fecha, string descripcion, int idEmpresa, int idPlanta)
+    public Ruta(int id, string nombre, string fecha, string descripcion, string estado, int id_usuario_asignado, int progreso_ruta, string fecha_inicio_real, int start_offset_minutes)
     {
         IdRuta = id;
         NombreRuta = nombre;
         FechaCreacion = fecha;
         Descripcion = descripcion;
-        IdEmpresa = idEmpresa;
-        IdPlanta = idPlanta;
+        Estado = estado;
+        Id_usuario_asignado = id_usuario_asignado;
+        Progreso_ruta = progreso_ruta;
+        Fecha_inicio_real = fecha_inicio_real;
+        Start_offset_minutes = start_offset_minutes;
     }
     #endregion
 

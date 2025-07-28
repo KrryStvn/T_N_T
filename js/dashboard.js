@@ -1,3 +1,37 @@
+import { getCamiones,getRutas,getContenedores} from "../DataConnection/Gets.js";
+
+async function loadInfo(){
+    try{
+        //llamada a los métodos
+        const Camiones = await getCamiones();
+        const Rutas = await getRutas();
+        const Contenedores = await getContenedores();
+
+        //mapeo de las funciones
+        const infoCamiones = Camiones.camiones || [];
+        const infoRutas = Rutas.data || [];
+        const infoContenedores = Contenedores.data || [];
+
+        //conteo de datos
+        const totalCamiones = infoCamiones.length;
+        const totalRutas = infoRutas.length;
+        const totalContenedores = infoContenedores.length;
+
+        const ContadorCamiones = document.getElementById("ContadorCamiones");
+        const contadorContenedores = document.getElementById("contadorContenedores");
+        const contadorRutas = document.getElementById("contadorRutas");
+        if(ContadorCamiones){ContadorCamiones.textContent = totalCamiones;}
+        if(contadorContenedores){contadorContenedores.textContent = totalContenedores;}
+        if(contadorRutas){contadorRutas.textContent = totalRutas;}
+
+
+    }
+    catch(error){throw (error);}
+}
+
+document.addEventListener("DOMContentLoaded", loadInfo);
+
+/*
 // === GRÁFICA DE RENDIMIENTO (LINE CHART) ===
 const performanceCtx = document.getElementById('performanceChart').getContext('2d');
 new Chart(performanceCtx, {
@@ -178,12 +212,5 @@ new Chart(co2EmissionsCtx, {
         }
     }
 });
+*/
 
-// === NAV-LINK ACTIVE SWITCH ===
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function(e) {
-        if (this.getAttribute('href') === '#') e.preventDefault();
-        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        this.classList.add('active');
-    });
-});

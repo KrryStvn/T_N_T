@@ -1,7 +1,16 @@
 {
   "Version": 1,
   "WorkspaceRootPath": "C:\\xampp\\htdocs\\TrashNTrack\\T_N_T\\backend\\TrashNTrack\\",
-  "Documents": [],
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|c:\\xampp\\htdocs\\trashntrack\\t_n_t\\backend\\trashntrack\\trashntrack\\models\\simulator\\containerdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|solutionrelative:trashntrack\\models\\simulator\\containerdata.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|c:\\xampp\\htdocs\\trashntrack\\t_n_t\\backend\\trashntrack\\trashntrack\\controllers\\containerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{44425B0A-5681-4738-B699-8C11AAB06E00}|TrashNTrack\\TrashNTrack.csproj|solutionrelative:trashntrack\\controllers\\containerscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
   "DocumentGroupContainers": [
     {
       "Orientation": 0,
@@ -9,7 +18,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": -1,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,6 +39,32 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ContainersController.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\TrashNTrack\\T_N_T\\backend\\TrashNTrack\\TrashNTrack\\Controllers\\ContainersController.cs",
+              "RelativeDocumentMoniker": "TrashNTrack\\Controllers\\ContainersController.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\TrashNTrack\\T_N_T\\backend\\TrashNTrack\\TrashNTrack\\Controllers\\ContainersController.cs",
+              "RelativeToolTip": "TrashNTrack\\Controllers\\ContainersController.cs",
+              "ViewState": "AgIAABYAAAAAAAAAAAAgwAoAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T06:23:10.31Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ContainerData.cs",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\TrashNTrack\\T_N_T\\backend\\TrashNTrack\\TrashNTrack\\Models\\Simulator\\ContainerData.cs",
+              "RelativeDocumentMoniker": "TrashNTrack\\Models\\Simulator\\ContainerData.cs",
+              "ToolTip": "C:\\xampp\\htdocs\\TrashNTrack\\T_N_T\\backend\\TrashNTrack\\TrashNTrack\\Models\\Simulator\\ContainerData.cs",
+              "RelativeToolTip": "TrashNTrack\\Models\\Simulator\\ContainerData.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-28T06:13:00.522Z",
+              "EditorCaption": ""
             }
           ]
         }

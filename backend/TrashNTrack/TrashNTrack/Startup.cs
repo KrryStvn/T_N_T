@@ -22,6 +22,8 @@ namespace TrashNTrack
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<MongoDbConnection>();
+
             services.AddControllers();
 
             services.AddCors(options =>

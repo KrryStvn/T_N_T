@@ -8,11 +8,11 @@ public class ContainerData
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
 
-    [BsonElement("deviceID")]
-    public string DeviceID { get; set; }
+    [BsonElement("deviceId")]
+    public int DeviceID { get; set; } // ¡CAMBIO AQUÍ! De string a int
 
-    [BsonElement("clientID")]
-    public string ClientID { get; set; }
+    [BsonElement("clientId")]
+    public int ClientID { get; set; } // ¡CAMBIO AQUÍ! De string a int
 
     [BsonElement("name")]
     public string Name { get; set; }
@@ -29,46 +29,50 @@ public class ContainerData
     [BsonElement("values")]
     public ContainerSensorValues Values { get; set; }
 
-    [BsonElement("last_updated")]
+    [BsonElement("createdAt")]
     [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
-    public DateTime LastUpdated { get; set; }
+    public DateTime CreatedAt { get; set; }
+
+    [BsonElement("updatedAt")]
+    [BsonDateTimeOptions(Kind = DateTimeKind.Utc)]
+    public DateTime UpdatedAt { get; set; }
 
     public void PrepareForInsert()
     {
-        if (!ObjectId.TryParse(this.Id, out _))
+        if (string.IsNullOrEmpty(this.Id) || !ObjectId.TryParse(this.Id, out _))
         {
-            this.Id = null; // Permitirá que MongoDB genere un nuevo ID
+            this.Id = null;
         }
+
+        if (this.CreatedAt == default(DateTime))
+        {
+            this.CreatedAt = DateTime.UtcNow;
+        }
+        this.UpdatedAt = DateTime.UtcNow;
     }
 }
 
+// La clase ContainerSensorValues no necesita cambios para este escenario
 public class ContainerSensorValues
 {
     [BsonElement("device_id")]
     public int Device_id { get; set; }
 
-    [BsonElement("temperature_C")]
-    public double Temperature_C { get; set; }
+    [BsonElement("ToC")]
+    public double ToC { get; set; }
 
-    [BsonElement("humidity_RH")]
-    public double Humidity_RH { get; set; }
+    [BsonElement("RH")]
+    public double RH { get; set; }
 
-    [BsonElement("air_quality_ppm")]
-    public double Air_quality_ppm { get; set; }
+    [BsonElement("CO2_PPM")]
+    public double CO2_PPM { get; set; }
 
-    // Cambiado a double para aceptar decimales
-    [BsonElement("gas_ppm")]
-    public double Gas_ppm { get; set; }  // De int a double
+    [BsonElement("GLP_PPM")]
+    public double GLP_PPM { get; set; }
 
-    [BsonElement("distance_cm")]
-    public double Distance_cm { get; set; }
+    [BsonElement("CH4_PPM")]
+    public double CH4_PPM { get; set; }
 
-    [BsonElement("weight_kg")]
-    public double Weight_kg { get; set; }
-
-    [BsonElement("is_open")]
-    public bool Is_open { get; set; }
-
-    [BsonElement("open_count")]
-    public int Open_count { get; set; }
+    [BsonElement("H2_PPM")]
+    public double H2_PPM { get; set; }
 }

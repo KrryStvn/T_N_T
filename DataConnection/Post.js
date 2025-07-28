@@ -1,5 +1,4 @@
-import { config } from "./Config";
-import { fetchData } from "./Gets";
+import { config } from "./Config.js";
 
 //este método contiene la lógica de como se maneja el envío de información del método post
 export async function fetchPost(endpoint,info){
@@ -54,7 +53,7 @@ export async function postIncidentes(newIncidente){
 // =======================================
 // POST PARA REPORTES
 // =======================================
-export async function postIncidentes(newReporte){
+export async function postReportes(newReporte){
     if(!newReporte){
         throw new Error("Los datos no pueden estar vacíos");
     }
@@ -88,4 +87,71 @@ export async function postUsuarios(newUsuario){
     numero_telefono,
     firebase_uid,
     tipo_usuario
+*/
+
+
+// =======================================
+// POST PARA CONTENEDORES (un solo contenedor)
+// =======================================
+export async function postContainer(newContainer){
+    if(!newContainer){
+        throw new Error("Los datos del contenedor no pueden estar vacíos.");
+    }
+    // El endpoint es simplemente "Containers" para crear un solo contenedor
+    return fetchPost("Containers", newContainer);
+}
+/* Información que espera el método (para un solo contenedor):
+        newContainer = {
+            deviceId: int,
+            clientId: int,
+            name: string,
+            status: string,
+            type: string,
+            maxWeight_kg: double,
+            values: {
+                device_id: int,
+                ToC: double,
+                RH: double,
+                CO2_PPM: double,
+                GLP_PPM: double,
+                CH4_PPM: double,
+                H2_PPM: double
+            }
+        }
+    NOTA: createdAt, updatedAt e Id son generados por el backend.
+*/
+
+// =======================================
+// POST PARA CONTENEDORES (actualización por lotes)
+// =======================================
+export async function postBatchUpdateContainers(containersList){
+    if(!containersList || !Array.isArray(containersList) || containersList.length === 0){
+        throw new Error("La lista de contenedores no puede estar vacía o no es un arreglo.");
+    }
+    // El endpoint para la actualización por lotes es "Containers/batch-update"
+    return fetchPost("Containers/batch-update", containersList);
+}
+/* Información que espera el método (para actualización por lotes):
+        containersList = [
+            {
+                deviceId: int,
+                clientId: int,
+                name: string,
+                status: string,
+                type: string,
+                maxWeight_kg: double,
+                values: {
+                    device_id: int,
+                    ToC: double,
+                    RH: double,
+                    CO2_PPM: double,
+                    GLP_PPM: double,
+                    CH4_PPM: double,
+                    H2_PPM: double
+                }
+            },
+            // ... más objetos de contenedor
+        ]
+    NOTA: createdAt, updatedAt e Id son generados/manejados por el backend.
+          Para actualizaciones, el 'deviceId' se usa para encontrar el registro existente.
 */

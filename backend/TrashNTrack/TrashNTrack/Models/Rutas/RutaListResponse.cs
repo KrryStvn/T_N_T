@@ -13,11 +13,14 @@ public class RutaListResponse
             {
                 id = r.IdRuta,
                 nombre = r.NombreRuta,
-                fechaCreacion = r.FechaCreacion.ToString("yyyy-MM-dd"),
+                fechaCreacion = r.FechaCreacion,
                 descripcion = r.Descripcion,
-                idEmpresa = r.IdEmpresa,
-                idPlanta = r.IdPlanta
-            }).ToList()
+                estado = r.Estado,
+                id_usuaroi_asignado = r.Id_usuario_asignado,
+                progreso_ruta = r.Progreso_ruta,
+                fecha_inicio_real = r.Fecha_inicio_real,
+                start_offset_minutes = r.Start_offset_minutes
+    }).ToList()
         };
     }
 }
